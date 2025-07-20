@@ -33,7 +33,7 @@
       "type": "Type",
       "description": "Description",
       "rules": "Règles",
-      "tags": " ",
+      "tags": "Tags",
       "hidden": "Masqué",
       "placeholders": {
         "enterContentName": "Entrez le nom du contenu",

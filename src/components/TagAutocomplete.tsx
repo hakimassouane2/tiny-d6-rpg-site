@@ -3,7 +3,11 @@
 import { ChevronDown, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useI18n } from "../i18n/context";
-import { TAG_KEYS, getTagTranslation } from "../i18n/tags";
+import {
+  TAG_KEYS,
+  findTagByTranslation,
+  getTagTranslation,
+} from "../i18n/tags";
 
 interface TagAutocompleteProps {
   value: string;
@@ -22,6 +26,7 @@ export default function TagAutocomplete({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [isDropdownClick, setIsDropdownClick] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -31,8 +36,20 @@ export default function TagAutocomplete({
       .split(",")
       .map((tag) => tag.trim())
       .filter((tag) => tag);
-    setSelectedTags(tags);
-  }, [value]);
+
+    // Convert any translated tags back to their keys
+    const normalizedTags = tags.map((tag) => {
+      // If it's already a key, keep it
+      if (TAG_KEYS.includes(tag)) {
+        return tag;
+      }
+      // If it's a translation, find the key
+      const key = findTagByTranslation(tag, language);
+      return key || tag; // Fallback to original if not found
+    });
+
+    setSelectedTags(normalizedTags);
+  }, [value, language]);
 
   // Filter tags based on search term
   const filteredTags = TAG_KEYS.filter((tagKey) => {
@@ -49,19 +66,37 @@ export default function TagAutocomplete({
     setSearchTerm(inputValue);
     setIsOpen(true);
 
-    // Update the main value with current tags + input
-    const currentTags = selectedTags.join(", ");
-    const newValue = currentTags ? `${currentTags}, ${inputValue}` : inputValue;
-    onChange(newValue);
+    // Check if input contains commas (multiple tags)
+    if (inputValue.includes(",")) {
+      const newTags = inputValue
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag && !selectedTags.includes(tag));
+
+      if (newTags.length > 0) {
+        const newSelectedTags = [...selectedTags, ...newTags];
+        setSelectedTags(newSelectedTags);
+        setSearchTerm("");
+        setIsOpen(false);
+        onChange(newSelectedTags.join(", "));
+      }
+    }
   };
 
   const handleTagSelect = (tagKey: string) => {
+    setIsDropdownClick(true);
     const newSelectedTags = [...selectedTags, tagKey];
     setSelectedTags(newSelectedTags);
     setSearchTerm("");
     setIsOpen(false);
     onChange(newSelectedTags.join(", "));
-    inputRef.current?.focus();
+
+    // Focus back to input after selection
+    setTimeout(() => {
+      inputRef.current?.focus();
+      // Reset the flag after focusing
+      setTimeout(() => setIsDropdownClick(false), 50);
+    }, 10);
   };
 
   const handleTagRemove = (tagKey: string) => {
@@ -71,12 +106,56 @@ export default function TagAutocomplete({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && filteredTags.length > 0) {
+    if (e.key === "Enter") {
       e.preventDefault();
-      handleTagSelect(filteredTags[0]);
+      if (filteredTags.length > 0) {
+        // Select first suggestion
+        handleTagSelect(filteredTags[0]);
+      } else if (searchTerm.trim()) {
+        // Add custom tag if no suggestions
+        const customTag = searchTerm.trim();
+        if (!selectedTags.includes(customTag)) {
+          const newSelectedTags = [...selectedTags, customTag];
+          setSelectedTags(newSelectedTags);
+          setSearchTerm("");
+          setIsOpen(false);
+          onChange(newSelectedTags.join(", "));
+        }
+      }
     } else if (e.key === "Escape") {
       setIsOpen(false);
     }
+  };
+
+  const handleBlur = () => {
+    // Don't process blur if a dropdown item was just clicked
+    if (isDropdownClick) {
+      return;
+    }
+
+    setTimeout(() => {
+      // Only add the search term if it's not empty and not already selected
+      // Also check if it's not a partial match that should be ignored
+      const trimmedSearch = searchTerm.trim();
+      if (trimmedSearch && !selectedTags.includes(trimmedSearch)) {
+        // Check if this is a partial match that should be ignored
+        const isPartialMatch = TAG_KEYS.some((tagKey) => {
+          const translation = getTagTranslation(tagKey, language);
+          return (
+            translation.toLowerCase().startsWith(trimmedSearch.toLowerCase()) &&
+            translation.toLowerCase() !== trimmedSearch.toLowerCase()
+          );
+        });
+
+        if (!isPartialMatch) {
+          const newSelectedTags = [...selectedTags, trimmedSearch];
+          setSelectedTags(newSelectedTags);
+          setSearchTerm("");
+          onChange(newSelectedTags.join(", "));
+        }
+      }
+      setIsOpen(false);
+    }, 200);
   };
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -126,6 +205,7 @@ export default function TagAutocomplete({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
+          onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
@@ -155,7 +235,7 @@ export default function TagAutocomplete({
               key={tagKey}
               type="button"
               onClick={() => handleTagSelect(tagKey)}
-              className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+              className="w-full px-3 py-2 text-left text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
             >
               {getTagTranslation(tagKey, language)}
             </button>

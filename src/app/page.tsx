@@ -208,6 +208,9 @@ function ContentForm({
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
+      console.log("formData.tags:", formData.tags);
+      console.log("tagsArray:", tagsArray);
+
       const contentData = {
         name: formData.name,
         type: formData.type,
@@ -216,6 +219,8 @@ function ContentForm({
         tags: tagsArray.length > 0 ? tagsArray : null,
         is_hidden: formData.is_hidden,
       };
+
+      console.log("contentData being sent:", contentData);
 
       if (editingItem && onEdit) {
         // Update existing content
@@ -359,12 +364,14 @@ function ContentForm({
 
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-700">
-              {t("content.form.tags")} (
-              {t("content.form.placeholders.enterTags")})
+              {t("content.form.tags")}
             </label>
             <TagAutocomplete
               value={formData.tags}
-              onChange={(value) => setFormData({ ...formData, tags: value })}
+              onChange={(value) => {
+                console.log("TagAutocomplete onChange called with:", value);
+                setFormData({ ...formData, tags: value });
+              }}
               placeholder={t("content.form.placeholders.enterTags")}
               disabled={isSubmitting}
             />
