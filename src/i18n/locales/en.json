@@ -28,6 +28,7 @@
     },
     "form": {
       "addNewContent": "Add New Content",
+      "editContent": "Edit Content",
       "name": "Name",
       "type": "Type",
       "description": "Description",
@@ -38,17 +39,21 @@
         "enterContentName": "Enter content name",
         "enterDescription": "Enter description",
         "enterRules": "Enter rules",
-        "enterTags": "Enter tags (comma separated)"
+        "enterTags": "Enter tags (comma separated)",
+        "searchContent": "Search content by name, description, or tags..."
       },
       "labels": {
         "hideFromPlayers": "Hide from players",
         "adding": "Adding...",
-        "addContent": "Add Content"
+        "updating": "Updating...",
+        "addContent": "Add Content",
+        "updateContent": "Update Content"
       }
     },
     "messages": {
       "pleaseEnterName": "Please enter a name",
       "failedToAddContent": "Failed to add content. Please try again.",
+      "failedToUpdateContent": "Failed to update content. Please try again.",
       "failedToDeleteContent": "Failed to delete content. Please try again.",
       "clickToConfirmDeletion": "Click again to confirm deletion",
       "noContentFound": "No content found matching your criteria."
@@ -56,7 +61,8 @@
     "actions": {
       "showMarkdown": "Show Markdown",
       "hideMarkdown": "Hide Markdown",
-      "exportToMarkdown": "Export to Markdown"
+      "exportToMarkdown": "Export to Markdown",
+      "edit": "Edit"
     }
   },
   "admin": {

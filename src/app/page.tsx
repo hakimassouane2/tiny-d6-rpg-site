@@ -3,6 +3,7 @@
 import {
   Dice6,
   Download,
+  Edit,
   Eye,
   EyeOff,
   Lock,
@@ -23,16 +24,22 @@ import {
   D6Content,
 } from "../types/content";
 import { contentToMarkdown } from "../utils/markdown";
-import { addContent, deleteContent, fetchContent } from "../utils/supabase";
+import {
+  addContent,
+  deleteContent,
+  fetchContent,
+  updateContent,
+} from "../utils/supabase";
 
 const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry"];
 interface ContentCardProps {
   item: D6Content;
   onDelete?: (id: string) => void;
+  onEdit?: (item: D6Content) => void;
   isAdmin: boolean;
 }
 
-function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
+function ContentCard({ item, onDelete, onEdit, isAdmin }: ContentCardProps) {
   const { t } = useI18n();
   const typeColors: Record<ContentType, string> = {
     trait: "bg-blue-50 border-blue-200 text-blue-800",
@@ -57,6 +64,12 @@ function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
     }
   };
 
+  const handleEditClick = () => {
+    if (onEdit) {
+      onEdit(item);
+    }
+  };
+
   return (
     <div
       className={`border-2 rounded-lg p-4 ${
@@ -77,22 +90,35 @@ function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
           <span className="text-xs px-2 py-1 rounded-full bg-white bg-opacity-50 capitalize">
             {t(`content.types.${item.type}`)}
           </span>
-          {isAdmin && onDelete && (
-            <button
-              onClick={handleDeleteClick}
-              className={`p-1 rounded transition-colors ${
-                showDeleteConfirm
-                  ? "bg-red-500 text-white hover:bg-red-600"
-                  : "text-red-500 hover:text-red-700 hover:bg-red-50"
-              } cursor-pointer`}
-              title={
-                showDeleteConfirm
-                  ? t("content.messages.clickToConfirmDeletion")
-                  : t("common.delete")
-              }
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
+          {isAdmin && (
+            <>
+              {onEdit && (
+                <button
+                  onClick={handleEditClick}
+                  className="p-1 rounded transition-colors text-blue-500 hover:text-blue-700 hover:bg-blue-50 cursor-pointer"
+                  title={t("content.actions.edit")}
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={handleDeleteClick}
+                  className={`p-1 rounded transition-colors ${
+                    showDeleteConfirm
+                      ? "bg-red-500 text-white hover:bg-red-600"
+                      : "text-red-500 hover:text-red-700 hover:bg-red-50"
+                  } cursor-pointer`}
+                  title={
+                    showDeleteConfirm
+                      ? t("content.messages.clickToConfirmDeletion")
+                      : t("common.delete")
+                  }
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -128,11 +154,19 @@ function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
 
 interface ContentFormProps {
   onAdd: (content: D6Content) => void;
+  onEdit?: (content: D6Content) => void;
   onClose: () => void;
   isAdmin: boolean;
+  editingItem?: D6Content | null;
 }
 
-function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
+function ContentForm({
+  onAdd,
+  onEdit,
+  onClose,
+  isAdmin,
+  editingItem,
+}: ContentFormProps) {
   const { t } = useI18n();
   const [formData, setFormData] = useState<ContentFormData>({
     name: "",
@@ -143,6 +177,20 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
     is_hidden: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Initialize form data when editing
+  useEffect(() => {
+    if (editingItem) {
+      setFormData({
+        name: editingItem.name,
+        type: editingItem.type,
+        description: editingItem.description || "",
+        rules: editingItem.rules || "",
+        tags: editingItem.tags ? editingItem.tags.join(", ") : "",
+        is_hidden: editingItem.is_hidden || false,
+      });
+    }
+  }, [editingItem]);
 
   const handleSubmit = async (): Promise<void> => {
     if (!formData.name.trim()) {
@@ -158,7 +206,7 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
-      const newContent = {
+      const contentData = {
         name: formData.name,
         type: formData.type,
         description: formData.description || null,
@@ -167,25 +215,40 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
         is_hidden: formData.is_hidden,
       };
 
-      const result = await addContent(newContent);
-
-      if (result) {
-        onAdd(result);
-        setFormData({
-          name: "",
-          type: "trait",
-          description: "",
-          rules: "",
-          tags: "",
-          is_hidden: false,
-        });
-        onClose();
+      if (editingItem && onEdit) {
+        // Update existing content
+        const result = await updateContent(editingItem.id, contentData);
+        if (result) {
+          onEdit(result);
+          onClose();
+        } else {
+          alert(t("content.messages.failedToUpdateContent"));
+        }
       } else {
-        alert(t("content.messages.failedToAddContent"));
+        // Add new content
+        const result = await addContent(contentData);
+        if (result) {
+          onAdd(result);
+          setFormData({
+            name: "",
+            type: "trait",
+            description: "",
+            rules: "",
+            tags: "",
+            is_hidden: false,
+          });
+          onClose();
+        } else {
+          alert(t("content.messages.failedToAddContent"));
+        }
       }
     } catch (error) {
-      console.error("Error adding content:", error);
-      alert(t("content.messages.failedToAddContent"));
+      console.error("Error saving content:", error);
+      alert(
+        editingItem
+          ? t("content.messages.failedToUpdateContent")
+          : t("content.messages.failedToAddContent")
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -211,6 +274,8 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
     }
   };
 
+  const isEditing = !!editingItem;
+
   return (
     <div
       className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50"
@@ -219,7 +284,9 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
       <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900">
-            {t("content.form.addNewContent")}
+            {isEditing
+              ? t("content.form.editContent")
+              : t("content.form.addNewContent")}
           </h2>
           <button
             onClick={onClose}
@@ -329,7 +396,11 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
               className="flex-1 bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting
-                ? t("content.form.labels.adding")
+                ? isEditing
+                  ? t("content.form.labels.updating")
+                  : t("content.form.labels.adding")
+                : isEditing
+                ? t("content.form.labels.updateContent")
                 : t("content.form.labels.addContent")}
             </button>
             <button
@@ -360,6 +431,7 @@ export default function D6RPGSite() {
   });
   const [showAdminLogin, setShowAdminLogin] = useState<boolean>(false);
   const [showHiddenContent, setShowHiddenContent] = useState<boolean>(false);
+  const [editingItem, setEditingItem] = useState<D6Content | null>(null);
 
   // Simple admin password (you can change this)
   const ADMIN_PASSWORD = "admin123";
@@ -435,6 +507,19 @@ export default function D6RPGSite() {
     }
 
     setContent(content.filter((item) => item.id !== id));
+  };
+
+  const handleEditContent = (item: D6Content) => {
+    setEditingItem(item);
+    setShowForm(true);
+  };
+
+  const handleUpdateContent = (updatedItem: D6Content) => {
+    setContent(
+      content.map((item) => (item.id === updatedItem.id ? updatedItem : item))
+    );
+    setEditingItem(null);
+    setShowForm(false);
   };
 
   const handleAdminLogin = (password: string) => {
@@ -563,7 +648,10 @@ export default function D6RPGSite() {
               />
             </div>
             <button
-              onClick={() => setShowForm(true)}
+              onClick={() => {
+                setEditingItem(null);
+                setShowForm(true);
+              }}
               className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
@@ -623,6 +711,7 @@ export default function D6RPGSite() {
               key={item.id}
               item={item}
               onDelete={handleDeleteContent}
+              onEdit={handleEditContent}
               isAdmin={adminState.isLoggedIn}
             />
           ))}
@@ -636,12 +725,17 @@ export default function D6RPGSite() {
           </div>
         )}
 
-        {/* Add Content Form */}
+        {/* Add/Edit Content Form */}
         {showForm && (
           <ContentForm
             onAdd={handleAddContent}
-            onClose={() => setShowForm(false)}
+            onEdit={handleUpdateContent}
+            onClose={() => {
+              setShowForm(false);
+              setEditingItem(null);
+            }}
             isAdmin={adminState.isLoggedIn}
+            editingItem={editingItem}
           />
         )}
 

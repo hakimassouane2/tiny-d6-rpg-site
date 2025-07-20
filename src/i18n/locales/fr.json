@@ -28,6 +28,7 @@
     },
     "form": {
       "addNewContent": "Ajouter du Nouveau Contenu",
+      "editContent": "Modifier le Contenu",
       "name": "Nom",
       "type": "Type",
       "description": "Description",
@@ -44,12 +45,15 @@
       "labels": {
         "hideFromPlayers": "Masquer aux joueurs",
         "adding": "Ajout en cours...",
-        "addContent": "Ajouter du Contenu"
+        "updating": "Mise à jour en cours...",
+        "addContent": "Ajouter du Contenu",
+        "updateContent": "Mettre à Jour le Contenu"
       }
     },
     "messages": {
       "pleaseEnterName": "Veuillez entrer un nom",
       "failedToAddContent": "Échec de l'ajout du contenu. Veuillez réessayer.",
+      "failedToUpdateContent": "Échec de la mise à jour du contenu. Veuillez réessayer.",
       "failedToDeleteContent": "Échec de la suppression du contenu. Veuillez réessayer.",
       "clickToConfirmDeletion": "Cliquez à nouveau pour confirmer la suppression",
       "noContentFound": "Aucun contenu trouvé correspondant à vos critères."
@@ -57,7 +61,8 @@
     "actions": {
       "showMarkdown": "Afficher Markdown",
       "hideMarkdown": "Masquer Markdown",
-      "exportToMarkdown": "Exporter en Markdown"
+      "exportToMarkdown": "Exporter en Markdown",
+      "edit": "Modifier"
     }
   },
   "admin": {
