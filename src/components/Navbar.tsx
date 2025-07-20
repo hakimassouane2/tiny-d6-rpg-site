@@ -42,7 +42,9 @@ export default function Navbar({
                 {t("navigation.title")}
               </h1>
               <p className="text-xs text-gray-500 hidden sm:block">
-                {t("navigation.description")}
+                {isAdmin
+                  ? t("navigation.description")
+                  : t("navigation.descriptionNonAdmin")}
               </p>
             </div>
           </div>

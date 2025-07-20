@@ -17,7 +17,8 @@
   },
   "navigation": {
     "title": "Tiny D6 RPG Content Manager",
-    "description": "Share and manage traits, objects, classes, ancestries, traps, and monsters for your Tiny D6 RPG campaign"
+    "description": "Share and manage traits, objects, classes, ancestries, traps, and monsters for your Tiny D6 RPG campaign",
+    "descriptionNonAdmin": "Share and manage traits, objects, classes, and ancestries for your Tiny D6 RPG campaign"
   },
   "content": {
     "types": {

@@ -31,6 +31,14 @@ const CONTENT_TYPES: ContentType[] = [
   "monster",
 ];
 
+// Get content types based on admin status
+const getContentTypesForUser = (isAdmin: boolean): ContentType[] => {
+  if (isAdmin) {
+    return CONTENT_TYPES;
+  }
+  return ["trait", "object", "class", "ancestry"];
+};
+
 interface ContentFormProps {
   onAdd: (content: D6Content) => void;
   onEdit?: (content: D6Content) => void;
@@ -200,7 +208,7 @@ function ContentForm({
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               disabled={isSubmitting}
             >
-              {CONTENT_TYPES.map((type: ContentType) => (
+              {getContentTypesForUser(isAdmin).map((type: ContentType) => (
                 <option key={type} value={type} className="capitalize">
                   {t(`content.types.${type}`)}
                 </option>
@@ -341,6 +349,10 @@ export default function D6RPGSite() {
     // Filter by visibility
     if (!adminState.isLoggedIn) {
       filtered = filtered.filter((item) => !item.is_hidden);
+      // Also filter out monster and trap content for non-admin users
+      filtered = filtered.filter(
+        (item) => item.type !== "monster" && item.type !== "trap"
+      );
     } else if (!showHiddenContent) {
       filtered = filtered.filter((item) => !item.is_hidden);
     }
@@ -437,8 +449,18 @@ export default function D6RPGSite() {
     URL.revokeObjectURL(url);
   };
 
-  const typeCount = (type: ContentType): number =>
-    content.filter((item: D6Content) => item.type === type).length;
+  const typeCount = (type: ContentType): number => {
+    const items = content.filter((item: D6Content) => item.type === type);
+
+    // For non-admin users, don't count monster and trap content
+    if (!adminState.isLoggedIn) {
+      if (type === "monster" || type === "trap") {
+        return 0;
+      }
+    }
+
+    return items.length;
+  };
 
   if (isLoading) {
     return (
@@ -480,16 +502,18 @@ export default function D6RPGSite() {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
-            <button
-              onClick={() => {
-                setEditingItem(null);
-                setShowForm(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              {t("content.form.addNewContent")}
-            </button>
+            {adminState.isLoggedIn && (
+              <button
+                onClick={() => {
+                  setEditingItem(null);
+                  setShowForm(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                {t("content.form.addNewContent")}
+              </button>
+            )}
           </div>
 
           {/* Filter Buttons */}
@@ -504,37 +528,41 @@ export default function D6RPGSite() {
             >
               {t("stats.all")} ({filteredContent.length})
             </button>
-            {CONTENT_TYPES.map((type: ContentType) => (
-              <button
-                key={type}
-                onClick={() => setSelectedType(type)}
-                className={`px-4 py-2 rounded-lg capitalize transition-colors ${
-                  selectedType === type
-                    ? "bg-gray-800 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                {t(`content.types.${type}`)}s ({typeCount(type)})
-              </button>
-            ))}
+            {getContentTypesForUser(adminState.isLoggedIn).map(
+              (type: ContentType) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-4 py-2 rounded-lg capitalize transition-colors ${
+                    selectedType === type
+                      ? "bg-gray-800 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  {t(`content.types.${type}`)}s ({typeCount(type)})
+                </button>
+              )
+            )}
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {CONTENT_TYPES.map((type: ContentType) => (
-            <div
-              key={type}
-              className="bg-white rounded-lg p-4 text-center shadow-sm"
-            >
-              <div className="text-2xl font-bold text-gray-800">
-                {typeCount(type)}
+          {getContentTypesForUser(adminState.isLoggedIn).map(
+            (type: ContentType) => (
+              <div
+                key={type}
+                className="bg-white rounded-lg p-4 text-center shadow-sm"
+              >
+                <div className="text-2xl font-bold text-gray-800">
+                  {typeCount(type)}
+                </div>
+                <div className="text-sm text-gray-600 capitalize">
+                  {t(`content.types.${type}`)}s
+                </div>
               </div>
-              <div className="text-sm text-gray-600 capitalize">
-                {t(`content.types.${type}`)}s
-              </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
 
         {/* Content Grid */}
