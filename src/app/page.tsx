@@ -20,7 +20,7 @@ import {
   ContentType,
   D6Content,
 } from "../types/content";
-import { contentToMarkdown, parseMarkdown } from "../utils/markdown";
+import { contentToMarkdown } from "../utils/markdown";
 import { addContent, deleteContent, fetchContent } from "../utils/supabase";
 
 const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry"];
@@ -103,28 +103,6 @@ function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
         </div>
       )}
 
-      {item.markdown_content && (
-        <div className="mb-3">
-          <div className="flex items-center gap-2 mb-2">
-            <h4 className="font-semibold text-sm">Markdown Content:</h4>
-            <button
-              onClick={() => setShowMarkdown(!showMarkdown)}
-              className="text-xs px-2 py-1 bg-white bg-opacity-50 rounded hover:bg-opacity-70 cursor-pointer"
-            >
-              {showMarkdown ? "Hide" : "Show"}
-            </button>
-          </div>
-          {showMarkdown && (
-            <div
-              className="text-sm bg-white bg-opacity-30 p-2 rounded prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{
-                __html: parseMarkdown(item.markdown_content),
-              }}
-            />
-          )}
-        </div>
-      )}
-
       {item.tags && item.tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {item.tags.map((tag: string, index: number) => (
@@ -155,7 +133,6 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
     rules: "",
     tags: "",
     is_hidden: false,
-    markdown_content: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -180,7 +157,6 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
         rules: formData.rules || null,
         tags: tagsArray.length > 0 ? tagsArray : null,
         is_hidden: formData.is_hidden,
-        markdown_content: formData.markdown_content || null,
       };
 
       const result = await addContent(newContent);
@@ -194,7 +170,6 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
           rules: "",
           tags: "",
           is_hidden: false,
-          markdown_content: "",
         });
         onClose();
       } else {
@@ -335,19 +310,6 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
               </label>
             </div>
           )}
-
-          <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
-              Markdown Content (optional)
-            </label>
-            <textarea
-              value={formData.markdown_content}
-              onChange={handleInputChange("markdown_content")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 h-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-none"
-              placeholder="# Title&#10;&#10;## Description&#10;Your content here..."
-              disabled={isSubmitting}
-            />
-          </div>
 
           <div className="flex gap-2 pt-4">
             <button

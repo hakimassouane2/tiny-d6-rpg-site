@@ -67,7 +67,6 @@ CREATE TABLE d6_content (
   rules TEXT,
   tags TEXT[],
   is_hidden BOOLEAN DEFAULT FALSE,
-  markdown_content TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

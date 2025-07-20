@@ -8,7 +8,6 @@ export interface D6Content {
   rules: string | null;
   tags: string[] | null;
   is_hidden: boolean | null;
-  markdown_content: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -20,7 +19,6 @@ export interface ContentFormData {
   rules: string;
   tags: string;
   is_hidden: boolean;
-  markdown_content: string;
 }
 
 export interface AdminState {
