@@ -1,10 +1,4 @@
-export type ContentType =
-  | "trait"
-  | "object"
-  | "class"
-  | "ancestry"
-  | "trap"
-  | "monster";
+export type ContentType = "trait" | "object" | "class" | "ancestry";
 
 // Base interface for common fields
 export interface BaseContent {
@@ -33,18 +27,14 @@ export interface Class extends BaseContent {
 
 export interface Ancestry extends BaseContent {
   type: "ancestry";
-}
-
-export interface Trap extends BaseContent {
-  type: "trap";
-}
-
-export interface Monster extends BaseContent {
-  type: "monster";
+  hit_points: number;
+  base_speed: number;
+  base_ac: number;
+  base_trait: string;
 }
 
 // Union type for all content
-export type D6Content = Trait | Object | Class | Ancestry | Trap | Monster;
+export type D6Content = Trait | Object | Class | Ancestry;
 
 export interface ContentFormData {
   name: string;

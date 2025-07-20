@@ -22,14 +22,7 @@ import {
   updateContent,
 } from "../utils/supabase";
 
-const CONTENT_TYPES: ContentType[] = [
-  "trait",
-  "object",
-  "class",
-  "ancestry",
-  "trap",
-  "monster",
-];
+const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry"];
 
 // Get content types based on admin status
 const getContentTypesForUser = (isAdmin: boolean): ContentType[] => {
@@ -349,10 +342,6 @@ export default function D6RPGSite() {
     // Filter by visibility
     if (!adminState.isLoggedIn) {
       filtered = filtered.filter((item) => !item.is_hidden);
-      // Also filter out monster and trap content for non-admin users
-      filtered = filtered.filter(
-        (item) => item.type !== "monster" && item.type !== "trap"
-      );
     } else if (!showHiddenContent) {
       filtered = filtered.filter((item) => !item.is_hidden);
     }
@@ -451,13 +440,6 @@ export default function D6RPGSite() {
 
   const typeCount = (type: ContentType): number => {
     const items = content.filter((item: D6Content) => item.type === type);
-
-    // For non-admin users, don't count monster and trap content
-    if (!adminState.isLoggedIn) {
-      if (type === "monster" || type === "trap") {
-        return 0;
-      }
-    }
 
     return items.length;
   };

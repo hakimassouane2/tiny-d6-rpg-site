@@ -7,7 +7,6 @@ A simple Next.js application for managing and sharing Tiny D6 RPG content (trait
 - **Content Management**: Add, view, and delete traits, objects, classes, and ancestries
 - **Search & Filter**: Find content by name, description, tags, or type
 - **Admin System**: Simple local authentication to manage hidden content
-- **Content Visibility**: Hide sensitive content (traps, monsters) from players
 - **Markdown Support**: Rich text formatting and export to markdown files
 - **Real-time Updates**: Changes are saved to Supabase database
 - **Responsive Design**: Works on desktop and mobile devices
@@ -100,7 +99,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ### Admin Features
 
 - **Login**: Click "Admin Login" and enter password (default: `admin123`)
-- **Hidden Content**: Toggle visibility of hidden content (traps, monsters, etc.)
 - **Delete Content**: Remove content (only available when logged in)
 - **Export to Markdown**: Download all content as a markdown file
 - **Hide Content**: Mark content as hidden from players

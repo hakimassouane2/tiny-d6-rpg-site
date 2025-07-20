@@ -4,10 +4,8 @@ import {
   Class,
   ContentType,
   D6Content,
-  Monster,
   Object,
   Trait,
-  Trap,
 } from "../types/content";
 
 // Generic function to get table name from content type
@@ -21,10 +19,6 @@ function getTableName(type: ContentType): string {
       return "classes";
     case "ancestry":
       return "ancestries";
-    case "trap":
-      return "traps";
-    case "monster":
-      return "monsters";
     default:
       throw new Error(`Unknown content type: ${type}`);
   }
@@ -36,14 +30,7 @@ export async function fetchContent(): Promise<D6Content[]> {
     const allContent: D6Content[] = [];
 
     // Fetch from each table
-    const tables: ContentType[] = [
-      "trait",
-      "object",
-      "class",
-      "ancestry",
-      "trap",
-      "monster",
-    ];
+    const tables: ContentType[] = ["trait", "object", "class", "ancestry"];
 
     for (const type of tables) {
       const tableName = getTableName(type);
@@ -217,32 +204,4 @@ export async function fetchAncestries(): Promise<Ancestry[]> {
   }
 
   return data?.map((item) => ({ ...item, type: "ancestry" as const })) || [];
-}
-
-export async function fetchTraps(): Promise<Trap[]> {
-  const { data, error } = await supabase
-    .from("traps")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching traps:", error);
-    return [];
-  }
-
-  return data?.map((item) => ({ ...item, type: "trap" as const })) || [];
-}
-
-export async function fetchMonsters(): Promise<Monster[]> {
-  const { data, error } = await supabase
-    .from("monsters")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching monsters:", error);
-    return [];
-  }
-
-  return data?.map((item) => ({ ...item, type: "monster" as const })) || [];
 }
