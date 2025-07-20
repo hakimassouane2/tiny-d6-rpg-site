@@ -16,7 +16,9 @@ import {
 import React, { useEffect, useState } from "react";
 import AdminLogin from "../components/AdminLogin";
 import LanguageSelector from "../components/LanguageSelector";
+import TagAutocomplete from "../components/TagAutocomplete";
 import { useI18n } from "../i18n/context";
+import { getTagTranslation } from "../i18n/tags";
 import {
   AdminState,
   ContentFormData,
@@ -40,7 +42,7 @@ interface ContentCardProps {
 }
 
 function ContentCard({ item, onDelete, onEdit, isAdmin }: ContentCardProps) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const typeColors: Record<ContentType, string> = {
     trait: "bg-blue-50 border-blue-200 text-blue-800",
     object: "bg-green-50 border-green-200 text-green-800",
@@ -143,7 +145,7 @@ function ContentCard({ item, onDelete, onEdit, isAdmin }: ContentCardProps) {
               key={index}
               className="text-xs px-2 py-1 bg-white bg-opacity-40 rounded"
             >
-              {tag}
+              {getTagTranslation(tag, language)}
             </span>
           ))}
         </div>
@@ -360,12 +362,10 @@ function ContentForm({
               {t("content.form.tags")} (
               {t("content.form.placeholders.enterTags")})
             </label>
-            <input
-              type="text"
+            <TagAutocomplete
               value={formData.tags}
-              onChange={handleInputChange("tags")}
+              onChange={(value) => setFormData({ ...formData, tags: value })}
               placeholder={t("content.form.placeholders.enterTags")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               disabled={isSubmitting}
             />
           </div>
@@ -418,7 +418,7 @@ function ContentForm({
 }
 
 export default function D6RPGSite() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [content, setContent] = useState<D6Content[]>([]);
   const [filteredContent, setFilteredContent] = useState<D6Content[]>([]);
   const [selectedType, setSelectedType] = useState<ContentType | "all">("all");
@@ -480,9 +480,13 @@ export default function D6RPGSite() {
         (item: D6Content) =>
           item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.tags?.some((tag: string) =>
-            tag.toLowerCase().includes(searchTerm.toLowerCase())
-          )
+          item.tags?.some((tag: string) => {
+            const translatedTag = getTagTranslation(tag, language);
+            return (
+              tag.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              translatedTag.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+          })
       );
     }
 
@@ -493,6 +497,7 @@ export default function D6RPGSite() {
     searchTerm,
     adminState.isLoggedIn,
     showHiddenContent,
+    language,
   ]);
 
   const handleAddContent = (newContent: D6Content): void => {
