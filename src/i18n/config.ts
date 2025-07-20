@@ -1,6 +1,6 @@
 export type Language = "en" | "fr";
 
-export const defaultLanguage: Language = "en";
+export const defaultLanguage: Language = "fr";
 
 export const supportedLanguages: Language[] = ["en", "fr"];
 
