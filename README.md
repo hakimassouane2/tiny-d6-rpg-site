@@ -11,7 +11,6 @@ A simple Next.js application for managing and sharing Tiny D6 RPG content (trait
 - **Markdown Support**: Rich text formatting and export to markdown files
 - **Real-time Updates**: Changes are saved to Supabase database
 - **Responsive Design**: Works on desktop and mobile devices
-- **Demo Mode**: Works without database setup using mock data
 
 ## Tech Stack
 
@@ -24,24 +23,27 @@ A simple Next.js application for managing and sharing Tiny D6 RPG content (trait
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 - Supabase account (optional for demo mode)
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd tiny-d6-rpg-site
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -55,6 +57,7 @@ To use real data storage instead of demo data:
 1. Create a Supabase project at [supabase.com](https://supabase.com)
 
 2. Create the `d6_content` table with this SQL:
+
 ```sql
 CREATE TABLE d6_content (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -79,6 +82,7 @@ CREATE POLICY "Allow all operations" ON d6_content FOR ALL USING (true);
 3. Get your Supabase URL and anon key from your project settings
 
 4. Create a `.env.local` file in the root directory:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -89,11 +93,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## Usage
 
 ### Player View (Default)
+
 - Players can view all non-hidden content
 - Search and filter functionality available
 - No admin controls visible
 
 ### Admin Features
+
 - **Login**: Click "Admin Login" and enter password (default: `admin123`)
 - **Hidden Content**: Toggle visibility of hidden content (traps, monsters, etc.)
 - **Delete Content**: Remove content (only available when logged in)
@@ -115,11 +121,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ### Markdown Support
 
 The app supports basic markdown formatting:
+
 - **Headers**: `# H1`, `## H2`, `### H3`
 - **Bold**: `**text**`
 - **Italic**: `*text*`
 - **Lists**: `* item`
-- **Code**: `` `code` `` or ``` ```code block``` ```
+- **Code**: `` `code` `` or ` `code block` `
 - **Line breaks**: Automatic
 
 ### Searching and Filtering

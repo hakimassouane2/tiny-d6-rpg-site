@@ -1,68 +1,29 @@
 "use client";
 
-import { Dice6, Download, Eye, EyeOff, Lock, LogOut, Plus, Search, Trash2, X } from "lucide-react";
+import {
+  Dice6,
+  Download,
+  Eye,
+  EyeOff,
+  Lock,
+  LogOut,
+  Plus,
+  Search,
+  Trash2,
+  X,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import AdminLogin from "../components/AdminLogin";
-import { AdminState, ContentFormData, ContentType, D6Content } from "../types/content";
+import {
+  AdminState,
+  ContentFormData,
+  ContentType,
+  D6Content,
+} from "../types/content";
 import { contentToMarkdown, parseMarkdown } from "../utils/markdown";
 import { addContent, deleteContent, fetchContent } from "../utils/supabase";
 
 const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry"];
-
-// Fallback mock data for demo when Supabase is not configured
-const mockData: D6Content[] = [
-  {
-    id: "1",
-    name: "Fleet-Footed",
-    type: "trait",
-    description: "Quick and agile movement",
-    rules: "+2 to all movement rolls",
-    tags: ["movement", "agility"],
-    is_hidden: false,
-    markdown_content: null,
-  },
-  {
-    id: "2",
-    name: "Magic Sword",
-    type: "object",
-    description: "An enchanted blade that glows",
-    rules: "Adds +1 to combat rolls, glows in darkness",
-    tags: ["weapon", "magic"],
-    is_hidden: false,
-    markdown_content: null,
-  },
-  {
-    id: "3",
-    name: "Warrior",
-    type: "class",
-    description: "A skilled fighter",
-    rules: "Bonus to combat rolls, weapon proficiency",
-    tags: ["combat", "melee"],
-    is_hidden: false,
-    markdown_content: null,
-  },
-  {
-    id: "4",
-    name: "Elf",
-    type: "ancestry",
-    description: "Forest-dwelling folk",
-    rules: "Enhanced senses, magic affinity",
-    tags: ["magic", "nature"],
-    is_hidden: false,
-    markdown_content: null,
-  },
-  {
-    id: "5",
-    name: "Hidden Trap",
-    type: "object",
-    description: "A concealed trap that triggers when stepped on",
-    rules: "Deals 2D6 damage, requires perception roll to spot",
-    tags: ["trap", "danger"],
-    is_hidden: true,
-    markdown_content: null,
-  },
-];
-
 interface ContentCardProps {
   item: D6Content;
   onDelete?: (id: string) => void;
@@ -106,7 +67,7 @@ function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
           <EyeOff className="w-4 h-4 text-gray-500" />
         </div>
       )}
-      
+
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-bold text-lg">{item.name}</h3>
         <div className="flex items-center gap-2">
@@ -117,11 +78,13 @@ function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
             <button
               onClick={handleDeleteClick}
               className={`p-1 rounded transition-colors ${
-                showDeleteConfirm 
-                  ? "bg-red-500 text-white hover:bg-red-600" 
+                showDeleteConfirm
+                  ? "bg-red-500 text-white hover:bg-red-600"
                   : "text-red-500 hover:text-red-700 hover:bg-red-50"
               } cursor-pointer`}
-              title={showDeleteConfirm ? "Click again to confirm deletion" : "Delete"}
+              title={
+                showDeleteConfirm ? "Click again to confirm deletion" : "Delete"
+              }
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -152,9 +115,11 @@ function ContentCard({ item, onDelete, isAdmin }: ContentCardProps) {
             </button>
           </div>
           {showMarkdown && (
-            <div 
+            <div
               className="text-sm bg-white bg-opacity-30 p-2 rounded prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: parseMarkdown(item.markdown_content) }}
+              dangerouslySetInnerHTML={{
+                __html: parseMarkdown(item.markdown_content),
+              }}
             />
           )}
         </div>
@@ -219,7 +184,7 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
       };
 
       const result = await addContent(newContent);
-      
+
       if (result) {
         onAdd(result);
         setFormData({
@@ -250,9 +215,10 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
         HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
       >
     ): void => {
-      const value = e.target.type === 'checkbox' 
-        ? (e.target as HTMLInputElement).checked 
-        : e.target.value;
+      const value =
+        e.target.type === "checkbox"
+          ? (e.target as HTMLInputElement).checked
+          : e.target.value;
       setFormData({ ...formData, [field]: value });
     };
 
@@ -263,7 +229,7 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
@@ -280,7 +246,9 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Name</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Name
+            </label>
             <input
               type="text"
               value={formData.name}
@@ -292,7 +260,9 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Type</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Type
+            </label>
             <select
               value={formData.type}
               onChange={handleInputChange("type")}
@@ -321,7 +291,9 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Rules</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Rules
+            </label>
             <textarea
               value={formData.rules}
               onChange={handleInputChange("rules")}
@@ -355,7 +327,10 @@ function ContentForm({ onAdd, onClose, isAdmin }: ContentFormProps) {
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 disabled={isSubmitting}
               />
-              <label htmlFor="is_hidden" className="text-sm font-medium text-gray-700">
+              <label
+                htmlFor="is_hidden"
+                className="text-sm font-medium text-gray-700"
+              >
                 Hide from players
               </label>
             </div>
@@ -403,7 +378,6 @@ export default function D6RPGSite() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [useMockData, setUseMockData] = useState<boolean>(false);
   const [adminState, setAdminState] = useState<AdminState>({
     isLoggedIn: false,
     password: "",
@@ -429,16 +403,9 @@ export default function D6RPGSite() {
       const data = await fetchContent();
       if (data.length > 0) {
         setContent(data);
-        setUseMockData(false);
-      } else {
-        // Fallback to mock data if no Supabase data
-        setContent(mockData);
-        setUseMockData(true);
       }
     } catch (error) {
       console.error("Error loading content:", error);
-      setContent(mockData);
-      setUseMockData(true);
     } finally {
       setIsLoading(false);
     }
@@ -449,9 +416,9 @@ export default function D6RPGSite() {
 
     // Filter by visibility
     if (!adminState.isLoggedIn) {
-      filtered = filtered.filter(item => !item.is_hidden);
+      filtered = filtered.filter((item) => !item.is_hidden);
     } else if (!showHiddenContent) {
-      filtered = filtered.filter(item => !item.is_hidden);
+      filtered = filtered.filter((item) => !item.is_hidden);
     }
 
     if (selectedType !== "all") {
@@ -472,22 +439,26 @@ export default function D6RPGSite() {
     }
 
     setFilteredContent(filtered);
-  }, [content, selectedType, searchTerm, adminState.isLoggedIn, showHiddenContent]);
+  }, [
+    content,
+    selectedType,
+    searchTerm,
+    adminState.isLoggedIn,
+    showHiddenContent,
+  ]);
 
   const handleAddContent = (newContent: D6Content): void => {
     setContent([newContent, ...content]);
   };
 
   const handleDeleteContent = async (id: string): Promise<void> => {
-    if (!useMockData) {
-      const success = await deleteContent(id);
-      if (!success) {
-        alert("Failed to delete content. Please try again.");
-        return;
-      }
+    const success = await deleteContent(id);
+    if (!success) {
+      alert("Failed to delete content. Please try again.");
+      return;
     }
-    
-    setContent(content.filter(item => item.id !== id));
+
+    setContent(content.filter((item) => item.id !== id));
   };
 
   const handleAdminLogin = (password: string) => {
@@ -508,10 +479,10 @@ export default function D6RPGSite() {
 
   const exportToMarkdown = () => {
     const markdownContent = content
-      .filter(item => !item.is_hidden || adminState.isLoggedIn)
-      .map(item => contentToMarkdown(item))
+      .filter((item) => !item.is_hidden || adminState.isLoggedIn)
+      .map((item) => contentToMarkdown(item))
       .join("\n\n---\n\n");
-    
+
     const blob = new Blob([markdownContent], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -542,32 +513,33 @@ export default function D6RPGSite() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Dice6 className="w-8 h-8 text-blue-600" />
-            <h1 className="text-4xl font-bold text-gray-800">Tiny D6 RPG Content</h1>
+            <h1 className="text-4xl font-bold text-gray-800">
+              Tiny D6 RPG Content
+            </h1>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Browse and manage traits, objects, classes, and ancestries for your
             Tiny D6 RPG campaign. Share this page with your players for easy
             reference during sessions.
           </p>
-          {useMockData && (
-            <div className="mt-4 p-3 bg-yellow-100 border border-yellow-300 rounded-lg">
-              <p className="text-yellow-800 text-sm">
-                Using demo data. Configure Supabase environment variables to use real data storage.
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Admin Controls */}
         <div className="mb-6 flex flex-wrap gap-2 justify-center">
           {adminState.isLoggedIn ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-green-600 font-medium">Admin Mode</span>
+              <span className="text-sm text-green-600 font-medium">
+                Admin Mode
+              </span>
               <button
                 onClick={() => setShowHiddenContent(!showHiddenContent)}
                 className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
               >
-                {showHiddenContent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showHiddenContent ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
                 {showHiddenContent ? "Hide" : "Show"} Hidden
               </button>
               <button
@@ -666,10 +638,10 @@ export default function D6RPGSite() {
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredContent.map((item: D6Content) => (
-            <ContentCard 
-              key={item.id} 
-              item={item} 
-              onDelete={!useMockData ? handleDeleteContent : undefined}
+            <ContentCard
+              key={item.id}
+              item={item}
+              onDelete={handleDeleteContent}
               isAdmin={adminState.isLoggedIn}
             />
           ))}
