@@ -130,6 +130,7 @@ export const TAGS: Record<string, TagTranslation> = {
   torch: { en: "Torch", fr: "Torche" },
   rope: { en: "Rope", fr: "Corde" },
   backpack: { en: "Backpack", fr: "Sac à dos" },
+  instrument: { en: "Instrument", fr: "Instrument" },
 
   // Additional Environment & Location
   castle: { en: "Castle", fr: "Château" },
