@@ -33,10 +33,17 @@ import {
   updateContent,
 } from "../utils/supabase";
 
-const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry"];
+const CONTENT_TYPES: ContentType[] = [
+  "trait",
+  "object",
+  "class",
+  "ancestry",
+  "trap",
+  "monster",
+];
 interface ContentCardProps {
   item: D6Content;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string, type: ContentType) => void;
   onEdit?: (item: D6Content) => void;
   isAdmin: boolean;
 }
@@ -48,6 +55,8 @@ function ContentCard({ item, onDelete, onEdit, isAdmin }: ContentCardProps) {
     object: "bg-green-50 border-green-200 text-green-800",
     class: "bg-purple-50 border-purple-200 text-purple-800",
     ancestry: "bg-orange-50 border-orange-200 text-orange-800",
+    trap: "bg-red-50 border-red-200 text-red-800",
+    monster: "bg-gray-50 border-gray-200 text-gray-800",
   };
 
   const [showMarkdown, setShowMarkdown] = useState(false);
@@ -56,7 +65,7 @@ function ContentCard({ item, onDelete, onEdit, isAdmin }: ContentCardProps) {
   const handleDeleteClick = () => {
     if (onDelete) {
       if (showDeleteConfirm) {
-        onDelete(item.id);
+        onDelete(item.id, item.type);
         setShowDeleteConfirm(false);
       } else {
         setShowDeleteConfirm(true);
@@ -208,9 +217,6 @@ function ContentForm({
         .map((tag) => tag.trim())
         .filter((tag) => tag);
 
-      console.log("formData.tags:", formData.tags);
-      console.log("tagsArray:", tagsArray);
-
       const contentData = {
         name: formData.name,
         type: formData.type,
@@ -219,8 +225,6 @@ function ContentForm({
         tags: tagsArray.length > 0 ? tagsArray : null,
         is_hidden: formData.is_hidden,
       };
-
-      console.log("contentData being sent:", contentData);
 
       if (editingItem && onEdit) {
         // Update existing content
@@ -368,10 +372,7 @@ function ContentForm({
             </label>
             <TagAutocomplete
               value={formData.tags}
-              onChange={(value) => {
-                console.log("TagAutocomplete onChange called with:", value);
-                setFormData({ ...formData, tags: value });
-              }}
+              onChange={(value) => setFormData({ ...formData, tags: value })}
               placeholder={t("content.form.placeholders.enterTags")}
               disabled={isSubmitting}
             />
@@ -511,8 +512,11 @@ export default function D6RPGSite() {
     setContent([newContent, ...content]);
   };
 
-  const handleDeleteContent = async (id: string): Promise<void> => {
-    const success = await deleteContent(id);
+  const handleDeleteContent = async (
+    id: string,
+    type: ContentType
+  ): Promise<void> => {
+    const success = await deleteContent(id, type);
     if (!success) {
       alert(t("content.messages.failedToDeleteContent"));
       return;
@@ -722,7 +726,7 @@ export default function D6RPGSite() {
             <ContentCard
               key={item.id}
               item={item}
-              onDelete={handleDeleteContent}
+              onDelete={(id, type) => handleDeleteContent(id, type)}
               onEdit={handleEditContent}
               isAdmin={adminState.isLoggedIn}
             />

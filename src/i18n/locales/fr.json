@@ -17,14 +17,16 @@
   },
   "navigation": {
     "title": "Gestionnaire de Contenu Tiny D6 RPG",
-    "description": "Partagez et gérez des traits, objets, classes et héritages pour votre campagne Tiny D6 RPG"
+    "description": "Partagez et gérez des traits, objets, classes, ascendances, pièges et monstres pour votre campagne Tiny D6 RPG"
   },
   "content": {
     "types": {
       "trait": "Trait",
       "object": "Objet",
       "class": "Classe",
-      "ancestry": "Héritage"
+      "ancestry": "Ascendance",
+      "trap": "Piège",
+      "monster": "Monstre"
     },
     "form": {
       "addNewContent": "Ajouter du Nouveau Contenu",
