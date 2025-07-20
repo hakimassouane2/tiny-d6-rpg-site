@@ -27,8 +27,7 @@ export interface Class extends BaseContent {
 
 export interface Ancestry extends BaseContent {
   type: "ancestry";
-  hit_points: number;
-  base_speed: number;
+  base_hp: number;
   base_ac: number;
   base_trait: string;
 }
@@ -43,6 +42,9 @@ export interface ContentFormData {
   rules: string;
   tags: string;
   is_hidden: boolean;
+  base_hp?: number;
+  base_ac?: number;
+  base_trait?: string;
 }
 
 export interface AdminState {

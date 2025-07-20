@@ -35,12 +35,17 @@
       "description": "Description",
       "rules": "Règles",
       "tags": "Tags",
+      "baseHp": "PV de Base",
+      "baseAc": "CA de Base",
+      "baseTrait": "Trait de Base",
+      "ancestryStats": "Statistiques d'Héritage",
       "hidden": "Masqué",
       "placeholders": {
         "enterContentName": "Entrez le nom du contenu",
         "enterDescription": "Entrez la description",
         "enterRules": "Entrez les règles",
         "enterTags": "Entrez les tags (séparés par des virgules)",
+        "enterBaseTrait": "Entrez le trait de base",
         "searchContent": "Rechercher du contenu par nom, description ou tags..."
       },
       "labels": {

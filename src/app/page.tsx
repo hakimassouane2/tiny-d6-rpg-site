@@ -10,6 +10,7 @@ import { useI18n } from "../i18n/context";
 import { getTagTranslation } from "../i18n/tags";
 import {
   AdminState,
+  Ancestry,
   ContentFormData,
   ContentType,
   D6Content,
@@ -55,12 +56,16 @@ function ContentForm({
     rules: "",
     tags: "",
     is_hidden: false,
+    base_hp: 0,
+    base_ac: 0,
+    base_trait: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize form data when editing
   useEffect(() => {
     if (editingItem) {
+      const ancestryItem = editingItem as Ancestry;
       setFormData({
         name: editingItem.name,
         type: editingItem.type,
@@ -68,6 +73,9 @@ function ContentForm({
         rules: editingItem.rules || "",
         tags: editingItem.tags ? editingItem.tags.join(", ") : "",
         is_hidden: editingItem.is_hidden || false,
+        base_hp: ancestryItem.base_hp || 0,
+        base_ac: ancestryItem.base_ac || 0,
+        base_trait: ancestryItem.base_trait || "",
       });
     }
   }, [editingItem]);
@@ -93,6 +101,11 @@ function ContentForm({
         rules: formData.rules || null,
         tags: tagsArray.length > 0 ? tagsArray : null,
         is_hidden: formData.is_hidden,
+        ...(formData.type === "ancestry" && {
+          base_hp: formData.base_hp || 0,
+          base_ac: formData.base_ac || 0,
+          base_trait: formData.base_trait || "",
+        }),
       };
 
       if (editingItem && onEdit) {
@@ -216,7 +229,7 @@ function ContentForm({
             <textarea
               value={formData.description}
               onChange={handleInputChange("description")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-none"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
               placeholder={t("content.form.placeholders.enterDescription")}
               disabled={isSubmitting}
             />
@@ -229,7 +242,7 @@ function ContentForm({
             <textarea
               value={formData.rules}
               onChange={handleInputChange("rules")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-none"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
               placeholder={t("content.form.placeholders.enterRules")}
               disabled={isSubmitting}
             />
@@ -246,6 +259,53 @@ function ContentForm({
               disabled={isSubmitting}
             />
           </div>
+
+          {/* Ancestry-specific fields */}
+          {formData.type === "ancestry" && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">
+                    {t("content.form.baseHp")}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.base_hp || 0}
+                    onChange={handleInputChange("base_hp")}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    placeholder="0"
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">
+                    {t("content.form.baseAc")}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.base_ac || 0}
+                    onChange={handleInputChange("base_ac")}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    placeholder="0"
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-gray-700">
+                  {t("content.form.baseTrait")}
+                </label>
+                <input
+                  type="text"
+                  value={formData.base_trait || ""}
+                  onChange={handleInputChange("base_trait")}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  placeholder={t("content.form.placeholders.enterBaseTrait")}
+                  disabled={isSubmitting}
+                />
+              </div>
+            </>
+          )}
 
           {isAdmin && (
             <div className="flex items-center gap-2">

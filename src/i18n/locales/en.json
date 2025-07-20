@@ -35,12 +35,17 @@
       "description": "Description",
       "rules": "Rules",
       "tags": "Tags",
+      "baseHp": "Base HP",
+      "baseAc": "Base AC",
+      "baseTrait": "Base Trait",
+      "ancestryStats": "Ancestry Stats",
       "hidden": "Hidden",
       "placeholders": {
         "enterContentName": "Enter content name",
         "enterDescription": "Enter description",
         "enterRules": "Enter rules",
         "enterTags": "Enter tags (comma separated)",
+        "enterBaseTrait": "Enter base trait",
         "searchContent": "Search content by name, description, or tags..."
       },
       "labels": {

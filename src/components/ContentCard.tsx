@@ -2,7 +2,7 @@ import { Edit, EyeOff, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
 import { getTagTranslation } from "../i18n/tags";
-import { ContentType, D6Content } from "../types/content";
+import { Ancestry, ContentType, D6Content } from "../types/content";
 
 interface ContentCardProps {
   item: D6Content;
@@ -52,7 +52,7 @@ export default function ContentCard({
         typeColors[item.type]
       } transition-all hover:shadow-md hover:scale-105 relative ${
         item.is_hidden ? "opacity-60" : ""
-      }`}
+      } ${item.type === "ancestry" ? "flex flex-col" : ""}`}
     >
       {item.is_hidden && (
         <div className="absolute top-2 left-2">
@@ -112,8 +112,45 @@ export default function ContentCard({
         </div>
       )}
 
+      {/* Ancestry-specific properties */}
+      {item.type === "ancestry" && (
+        <div className="mb-3">
+          <div className="grid grid-cols-2 gap-2 text-sm mb-2">
+            <div className="bg-white bg-opacity-30 p-2 rounded text-center">
+              <div className="font-semibold text-blue-700">
+                {(item as Ancestry).base_hp || 0}
+              </div>
+              <div className="text-xs text-gray-600">
+                {t("content.form.baseHp")}
+              </div>
+            </div>
+            <div className="bg-white bg-opacity-30 p-2 rounded text-center">
+              <div className="font-semibold text-green-700">
+                {(item as Ancestry).base_ac || 0}
+              </div>
+              <div className="text-xs text-gray-600">
+                {t("content.form.baseAc")}
+              </div>
+            </div>
+          </div>
+          <div className="bg-white bg-opacity-30 p-2 rounded text-center">
+            <div className="font-semibold text-purple-700">
+              {(item as Ancestry).base_trait || "-"}
+            </div>
+            <div className="text-xs text-gray-600">
+              {t("content.form.baseTrait")}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tags - moved to bottom for ancestry, otherwise in normal position */}
       {item.tags && item.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1">
+        <div
+          className={`flex flex-wrap gap-1 ${
+            item.type === "ancestry" ? "mt-auto" : ""
+          }`}
+        >
           {item.tags.map((tag: string, index: number) => (
             <span
               key={index}
