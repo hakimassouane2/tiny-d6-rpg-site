@@ -1,0 +1,78 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "download": "Télécharger",
+    "language": "Langue",
+    "english": "Anglais",
+    "french": "Français"
+  },
+  "navigation": {
+    "title": "Gestionnaire de Contenu Tiny D6 RPG",
+    "description": "Partagez et gérez des traits, objets, classes et héritages pour votre campagne Tiny D6 RPG"
+  },
+  "content": {
+    "types": {
+      "trait": "Trait",
+      "object": "Objet",
+      "class": "Classe",
+      "ancestry": "Héritage"
+    },
+    "form": {
+      "addNewContent": "Ajouter du Nouveau Contenu",
+      "name": "Nom",
+      "type": "Type",
+      "description": "Description",
+      "rules": "Règles",
+      "tags": " ",
+      "hidden": "Masqué",
+      "placeholders": {
+        "enterContentName": "Entrez le nom du contenu",
+        "enterDescription": "Entrez la description",
+        "enterRules": "Entrez les règles",
+        "enterTags": "Entrez les tags (séparés par des virgules)",
+        "searchContent": "Rechercher du contenu par nom, description ou tags..."
+      },
+      "labels": {
+        "hideFromPlayers": "Masquer aux joueurs",
+        "adding": "Ajout en cours...",
+        "addContent": "Ajouter du Contenu"
+      }
+    },
+    "messages": {
+      "pleaseEnterName": "Veuillez entrer un nom",
+      "failedToAddContent": "Échec de l'ajout du contenu. Veuillez réessayer.",
+      "failedToDeleteContent": "Échec de la suppression du contenu. Veuillez réessayer.",
+      "clickToConfirmDeletion": "Cliquez à nouveau pour confirmer la suppression",
+      "noContentFound": "Aucun contenu trouvé correspondant à vos critères."
+    },
+    "actions": {
+      "showMarkdown": "Afficher Markdown",
+      "hideMarkdown": "Masquer Markdown",
+      "exportToMarkdown": "Exporter en Markdown"
+    }
+  },
+  "admin": {
+    "login": "Connexion Admin",
+    "logout": "Déconnexion",
+    "password": "Mot de passe",
+    "loginButton": "Se connecter",
+    "logoutButton": "Se déconnecter",
+    "incorrectPassword": "Mot de passe incorrect",
+    "adminMode": "Mode Admin",
+    "showHidden": "Afficher Masqué",
+    "hideHidden": "Masquer Masqué",
+    "exportMD": "Exporter MD"
+  },
+  "stats": {
+    "all": "Tout"
+  }
+}
