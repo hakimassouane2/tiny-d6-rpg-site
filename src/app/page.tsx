@@ -7,21 +7,23 @@ import ContentCard from "../components/ContentCard";
 import Navbar from "../components/Navbar";
 import TagAutocomplete from "../components/TagAutocomplete";
 import { useI18n } from "../i18n/context";
-import { getTagTranslation } from "../i18n/tags";
 import {
   AdminState,
   Ancestry,
   ContentFormData,
   ContentType,
   D6Content,
+  TagDefinition
 } from "../types/content";
 import { contentToMarkdown } from "../utils/markdown";
 import {
   addContent,
   deleteContent,
   fetchContent,
+  fetchTagDefinitions,
   updateContent,
 } from "../utils/supabase";
+import { getTagTranslationSync } from "../utils/tagTranslation";
 
 const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry"];
 
@@ -362,6 +364,7 @@ export default function D6RPGSite() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [tagDefinitions, setTagDefinitions] = useState<TagDefinition[]>([]);
   const [adminState, setAdminState] = useState<AdminState>({
     isLoggedIn: false,
     isAdmin: false,
@@ -390,10 +393,16 @@ export default function D6RPGSite() {
   const loadContent = async () => {
     setIsLoading(true);
     try {
-      const data = await fetchContent();
-      if (data.length > 0) {
-        setContent(data);
+      const [contentData, tagData] = await Promise.all([
+        fetchContent(),
+        fetchTagDefinitions(),
+      ]);
+      
+      if (contentData.length > 0) {
+        setContent(contentData);
       }
+      
+      setTagDefinitions(tagData);
     } catch (error) {
       console.error("Error loading content:", error);
     } finally {
@@ -423,7 +432,7 @@ export default function D6RPGSite() {
           item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.tags?.some((tag: string) => {
-            const translatedTag = getTagTranslation(tag, language);
+            const translatedTag = getTagTranslationSync(tag, language, tagDefinitions);
             return (
               tag.toLowerCase().includes(searchTerm.toLowerCase()) ||
               translatedTag.toLowerCase().includes(searchTerm.toLowerCase())
@@ -440,6 +449,7 @@ export default function D6RPGSite() {
     adminState.isLoggedIn,
     showHiddenContent,
     language,
+    tagDefinitions,
   ]);
 
   const handleAddContent = (newContent: D6Content): void => {
@@ -621,6 +631,7 @@ export default function D6RPGSite() {
               onDelete={(id, type) => handleDeleteContent(id, type)}
               onEdit={handleEditContent}
               isAdmin={adminState.isLoggedIn}
+              tagDefinitions={tagDefinitions}
             />
           ))}
         </div>

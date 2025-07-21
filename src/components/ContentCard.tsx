@@ -1,14 +1,15 @@
 import { Edit, EyeOff, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
-import { getTagTranslation } from "../i18n/tags";
-import { Ancestry, ContentType, D6Content } from "../types/content";
+import { Ancestry, ContentType, D6Content, TagDefinition } from "../types/content";
+import { getTagTranslationSync } from "../utils/tagTranslation";
 
 interface ContentCardProps {
   item: D6Content;
   onDelete?: (id: string, type: ContentType) => void;
   onEdit?: (item: D6Content) => void;
   isAdmin: boolean;
+  tagDefinitions?: TagDefinition[];
 }
 
 export default function ContentCard({
@@ -16,6 +17,7 @@ export default function ContentCard({
   onDelete,
   onEdit,
   isAdmin,
+  tagDefinitions = [],
 }: ContentCardProps) {
   const { t, language } = useI18n();
   const typeColors: Record<ContentType, string> = {
@@ -156,7 +158,7 @@ export default function ContentCard({
               key={index}
               className="text-xs px-2 py-1 bg-white bg-opacity-40 rounded"
             >
-              {getTagTranslation(tag, language)}
+              {getTagTranslationSync(tag, language, tagDefinitions)}
             </span>
           ))}
         </div>
