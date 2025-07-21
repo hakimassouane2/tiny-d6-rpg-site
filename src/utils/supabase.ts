@@ -5,6 +5,8 @@ import {
   ContentType,
   D6Content,
   Object,
+  TagDefinition,
+  TagDefinitionFormData,
   Trait,
 } from "../types/content";
 
@@ -204,4 +206,115 @@ export async function fetchAncestries(): Promise<Ancestry[]> {
   }
 
   return data?.map((item) => ({ ...item, type: "ancestry" as const })) || [];
+}
+
+// Tag Definition Management Functions
+export async function fetchTagDefinitions(): Promise<TagDefinition[]> {
+  const { data, error } = await supabase
+    .from("tag_definitions")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching tag definitions:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function addTagDefinition(
+  tagData: TagDefinitionFormData
+): Promise<TagDefinition | null> {
+  try {
+    const { data, error } = await supabase
+      .from("tag_definitions")
+      .insert([
+        {
+          code: tagData.code,
+          name_en: tagData.name_en,
+          name_fr: tagData.name_fr,
+          category: tagData.category || null,
+          is_hidden: tagData.is_hidden,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding tag definition:", error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error adding tag definition:", error);
+    return null;
+  }
+}
+
+export async function updateTagDefinition(
+  id: string,
+  tagData: TagDefinitionFormData
+): Promise<TagDefinition | null> {
+  try {
+    const { data, error } = await supabase
+      .from("tag_definitions")
+      .update({
+        code: tagData.code,
+        name_en: tagData.name_en,
+        name_fr: tagData.name_fr,
+        category: tagData.category || null,
+        is_hidden: tagData.is_hidden,
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating tag definition:", error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error updating tag definition:", error);
+    return null;
+  }
+}
+
+export async function deleteTagDefinition(id: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from("tag_definitions")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error deleting tag definition:", error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting tag definition:", error);
+    return false;
+  }
+}
+
+export async function getTagDefinitionByCode(
+  code: string
+): Promise<TagDefinition | null> {
+  const { data, error } = await supabase
+    .from("tag_definitions")
+    .select("*")
+    .eq("code", code)
+    .single();
+
+  if (error) {
+    console.error("Error fetching tag definition by code:", error);
+    return null;
+  }
+
+  return data;
 }

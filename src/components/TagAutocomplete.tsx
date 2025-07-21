@@ -3,11 +3,8 @@
 import { ChevronDown, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useI18n } from "../i18n/context";
-import {
-  TAG_KEYS,
-  findTagByTranslation,
-  getTagTranslation,
-} from "../i18n/tags";
+import { TagDefinition } from "../types/content";
+import { fetchTagDefinitions } from "../utils/supabase";
 
 interface TagAutocompleteProps {
   value: string;
@@ -27,8 +24,26 @@ export default function TagAutocomplete({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isDropdownClick, setIsDropdownClick] = useState(false);
+  const [tagDefinitions, setTagDefinitions] = useState<TagDefinition[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Load tag definitions on component mount
+  useEffect(() => {
+    loadTagDefinitions();
+  }, []);
+
+  const loadTagDefinitions = async () => {
+    try {
+      const tags = await fetchTagDefinitions();
+      setTagDefinitions(tags);
+    } catch (error) {
+      console.error("Error loading tag definitions:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Parse comma-separated tags from value
   useEffect(() => {
@@ -37,29 +52,35 @@ export default function TagAutocomplete({
       .map((tag) => tag.trim())
       .filter((tag) => tag);
 
-    // Convert any translated tags back to their keys
+    // Convert any translated tags back to their codes
     const normalizedTags = tags.map((tag) => {
-      // If it's already a key, keep it
-      if (TAG_KEYS.includes(tag)) {
+      // If it's already a code, keep it
+      if (tagDefinitions.some((td) => td.code === tag)) {
         return tag;
       }
-      // If it's a translation, find the key
-      const key = findTagByTranslation(tag, language);
-      return key || tag; // Fallback to original if not found
+      // If it's a translation, find the code
+      const tagDef = tagDefinitions.find(
+        (td) =>
+          td.name_en.toLowerCase() === tag.toLowerCase() ||
+          td.name_fr.toLowerCase() === tag.toLowerCase()
+      );
+      return tagDef ? tagDef.code : tag; // Fallback to original if not found
     });
 
     setSelectedTags(normalizedTags);
-  }, [value, language]);
+  }, [value, tagDefinitions]);
 
   // Filter tags based on search term
-  const filteredTags = TAG_KEYS.filter((tagKey) => {
-    const translation = getTagTranslation(tagKey, language);
-    const isSelected = selectedTags.includes(tagKey);
-    const matchesSearch = translation
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    return !isSelected && matchesSearch;
-  }).slice(0, 10); // Limit to 10 suggestions
+  const filteredTags = tagDefinitions
+    .filter((tagDef) => {
+      const translation = language === "fr" ? tagDef.name_fr : tagDef.name_en;
+      const isSelected = selectedTags.includes(tagDef.code);
+      const matchesSearch =
+        translation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tagDef.code.toLowerCase().includes(searchTerm.toLowerCase());
+      return !isSelected && matchesSearch;
+    })
+    .slice(0, 10);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -83,9 +104,9 @@ export default function TagAutocomplete({
     }
   };
 
-  const handleTagSelect = (tagKey: string) => {
+  const handleTagSelect = (tagDef: TagDefinition) => {
     setIsDropdownClick(true);
-    const newSelectedTags = [...selectedTags, tagKey];
+    const newSelectedTags = [...selectedTags, tagDef.code];
     setSelectedTags(newSelectedTags);
     setSearchTerm("");
     setIsOpen(false);
@@ -99,8 +120,8 @@ export default function TagAutocomplete({
     }, 10);
   };
 
-  const handleTagRemove = (tagKey: string) => {
-    const newSelectedTags = selectedTags.filter((tag) => tag !== tagKey);
+  const handleTagRemove = (tagCode: string) => {
+    const newSelectedTags = selectedTags.filter((tag) => tag !== tagCode);
     setSelectedTags(newSelectedTags);
     onChange(newSelectedTags.join(", "));
   };
@@ -135,12 +156,12 @@ export default function TagAutocomplete({
 
     setTimeout(() => {
       // Only add the search term if it's not empty and not already selected
-      // Also check if it's not a partial match that should be ignored
       const trimmedSearch = searchTerm.trim();
       if (trimmedSearch && !selectedTags.includes(trimmedSearch)) {
         // Check if this is a partial match that should be ignored
-        const isPartialMatch = TAG_KEYS.some((tagKey) => {
-          const translation = getTagTranslation(tagKey, language);
+        const isPartialMatch = tagDefinitions.some((tagDef) => {
+          const translation =
+            language === "fr" ? tagDef.name_fr : tagDef.name_en;
           return (
             translation.toLowerCase().startsWith(trimmedSearch.toLowerCase()) &&
             translation.toLowerCase() !== trimmedSearch.toLowerCase()
@@ -172,20 +193,36 @@ export default function TagAutocomplete({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const getTagDisplayName = (tagCode: string) => {
+    const tagDef = tagDefinitions.find((td) => td.code === tagCode);
+    if (tagDef) {
+      return language === "fr" ? tagDef.name_fr : tagDef.name_en;
+    }
+    return tagCode;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-500">
+        Loading tags...
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       {/* Selected Tags Display */}
       {selectedTags.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
-          {selectedTags.map((tagKey) => (
+          {selectedTags.map((tagCode) => (
             <span
-              key={tagKey}
+              key={tagCode}
               className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full"
             >
-              {getTagTranslation(tagKey, language)}
+              {getTagDisplayName(tagCode)}
               <button
                 type="button"
-                onClick={() => handleTagRemove(tagKey)}
+                onClick={() => handleTagRemove(tagCode)}
                 className="text-blue-600 hover:text-blue-800"
                 disabled={disabled}
               >
@@ -230,14 +267,23 @@ export default function TagAutocomplete({
           ref={dropdownRef}
           className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
         >
-          {filteredTags.map((tagKey) => (
+          {filteredTags.map((tagDef) => (
             <button
-              key={tagKey}
+              key={tagDef.code}
               type="button"
-              onClick={() => handleTagSelect(tagKey)}
+              onClick={() => handleTagSelect(tagDef)}
               className="w-full px-3 py-2 text-left text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
             >
-              {getTagTranslation(tagKey, language)}
+              <div className="flex justify-between items-center">
+                <span>
+                  {language === "fr" ? tagDef.name_fr : tagDef.name_en}
+                </span>
+                {tagDef.category && (
+                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    {tagDef.category}
+                  </span>
+                )}
+              </div>
             </button>
           ))}
         </div>

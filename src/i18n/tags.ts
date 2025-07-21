@@ -314,7 +314,7 @@ export function findTagByTranslation(
   translation: string,
   language: "en" | "fr"
 ): string | null {
-  const entry = Object.entries(TAGS).find(([key, tag]) =>
+  const entry = Object.entries(TAGS).find(([, tag]) =>
     tag[language].toLowerCase().includes(translation.toLowerCase())
   );
   return entry ? entry[0] : null;

@@ -1,4 +1,13 @@
-import { Download, Eye, EyeOff, Lock, LogOut, User } from "lucide-react";
+import {
+  Download,
+  Eye,
+  EyeOff,
+  Lock,
+  LogOut,
+  Settings,
+  User,
+} from "lucide-react";
+import Link from "next/link";
 import { useI18n } from "../i18n/context";
 import AdminLogin from "./AdminLogin";
 import LanguageSelector from "./LanguageSelector";
@@ -64,6 +73,14 @@ export default function Navbar({
                       {t("admin.adminMode")}
                     </span>
                   </div>
+                  <Link
+                    href="/tags"
+                    className="flex items-center gap-1 px-2 py-1 text-sm bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 transition-colors"
+                    title="Tag Management"
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span className="hidden sm:inline">Tag Management</span>
+                  </Link>
                   {onToggleHiddenContent && (
                     <button
                       onClick={onToggleHiddenContent}

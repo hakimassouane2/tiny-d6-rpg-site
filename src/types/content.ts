@@ -32,6 +32,18 @@ export interface Ancestry extends BaseContent {
   base_trait: string;
 }
 
+// New tag definition interface for admin management
+export interface TagDefinition {
+  id: string;
+  code: string; // slug/identifier
+  name_en: string;
+  name_fr: string;
+  category: string | null;
+  is_hidden: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 // Union type for all content
 export type D6Content = Trait | Object | Class | Ancestry;
 
@@ -47,7 +59,17 @@ export interface ContentFormData {
   base_trait?: string;
 }
 
+// New tag definition form data
+export interface TagDefinitionFormData {
+  code: string;
+  name_en: string;
+  name_fr: string;
+  category: string;
+  is_hidden: boolean;
+}
+
 export interface AdminState {
   isLoggedIn: boolean;
+  isAdmin: boolean;
   password: string;
 }

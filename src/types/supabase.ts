@@ -44,6 +44,38 @@ export interface Database {
           updated_at?: string;
         };
       };
+      tag_definitions: {
+        Row: {
+          id: string;
+          code: string;
+          name_en: string;
+          name_fr: string;
+          category: string | null;
+          is_hidden: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          name_en: string;
+          name_fr: string;
+          category?: string | null;
+          is_hidden?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          name_en?: string;
+          name_fr?: string;
+          category?: string | null;
+          is_hidden?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: {
       [_ in never]: never;

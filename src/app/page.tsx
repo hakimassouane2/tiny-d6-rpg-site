@@ -364,6 +364,7 @@ export default function D6RPGSite() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [adminState, setAdminState] = useState<AdminState>({
     isLoggedIn: false,
+    isAdmin: false,
     password: "",
   });
   const [showAdminLogin, setShowAdminLogin] = useState<boolean>(false);
@@ -378,7 +379,11 @@ export default function D6RPGSite() {
     // Check if admin is already logged in
     const savedPassword = localStorage.getItem("admin_password");
     if (savedPassword === ADMIN_PASSWORD) {
-      setAdminState({ isLoggedIn: true, password: savedPassword });
+      setAdminState({
+        isLoggedIn: true,
+        isAdmin: true,
+        password: savedPassword,
+      });
     }
   }, []);
 
@@ -469,7 +474,7 @@ export default function D6RPGSite() {
 
   const handleAdminLogin = (password: string) => {
     if (password === ADMIN_PASSWORD) {
-      setAdminState({ isLoggedIn: true, password });
+      setAdminState({ isLoggedIn: true, isAdmin: true, password });
       localStorage.setItem("admin_password", password);
       setShowAdminLogin(false);
     } else {
@@ -478,7 +483,7 @@ export default function D6RPGSite() {
   };
 
   const handleAdminLogout = () => {
-    setAdminState({ isLoggedIn: false, password: "" });
+    setAdminState({ isLoggedIn: false, isAdmin: false, password: "" });
     localStorage.removeItem("admin_password");
     setShowHiddenContent(false);
   };
