@@ -1,13 +1,13 @@
 import { supabase } from "../lib/supabase";
 import {
-  Ancestry,
-  Class,
-  ContentType,
-  D6Content,
-  Object,
-  TagDefinition,
-  TagDefinitionFormData,
-  Trait,
+    Ancestry,
+    Class,
+    ContentType,
+    D6Content,
+    Object,
+    TagDefinition,
+    TagDefinitionFormData,
+    Trait,
 } from "../types/content";
 
 // Generic function to get table name from content type
@@ -39,7 +39,7 @@ export async function fetchContent(): Promise<D6Content[]> {
       const { data, error } = await supabase
         .from(tableName)
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("name", { ascending: true });
 
       if (error) {
         console.error(`Error fetching ${type} content:`, error);
@@ -53,12 +53,8 @@ export async function fetchContent(): Promise<D6Content[]> {
       }
     }
 
-    // Sort all content by created_at
-    return allContent.sort(
-      (a, b) =>
-        new Date(b.created_at || "").getTime() -
-        new Date(a.created_at || "").getTime()
-    );
+    // Sort all content by name alphabetically
+    return allContent.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error("Error fetching content:", error);
     return [];
