@@ -97,7 +97,7 @@ export default function Navbar({
                   {/* Settings Dropdown Menu */}
                   {showSettingsDropdown && (
                     <div
-                      className="absolute right-0 top-full mt-1 w-64 bg-white rounded-md shadow-lg border border-gray-200 py-2 z-50"
+                      className="absolute right-0 top-full mt-1 w-64 bg-white rounded-md shadow-lg border border-gray-200 py-2 pb-0 z-50"
                       onClick={handleBackdropClick}
                     >
                       {/* Admin Status */}
@@ -111,7 +111,7 @@ export default function Navbar({
                       </div>
 
                       {/* Settings Options */}
-                      <div className="py-1">
+                      <div className="pt-1">
                         <Link
                           href="/tags"
                           className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -127,7 +127,7 @@ export default function Navbar({
                               onToggleHiddenContent();
                               setShowSettingsDropdown(false);
                             }}
-                            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                            className="flex items-center gap-3 px-4 py-2 text-sm cursor-pointer text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
                           >
                             {showHiddenContent ? (
                               <EyeOff className="w-4 h-4 text-blue-600" />
@@ -148,21 +148,20 @@ export default function Navbar({
                               onExportToMarkdown();
                               setShowSettingsDropdown(false);
                             }}
-                            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                            className="flex items-center cursor-pointer gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
                           >
                             <Download className="w-4 h-4 text-green-600" />
                             <span>{t("admin.exportMD")}</span>
                           </button>
                         )}
 
-                        <div className="border-t border-gray-100 my-1"></div>
 
                         <button
                           onClick={() => {
                             onAdminLogout();
                             setShowSettingsDropdown(false);
                           }}
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left"
+                          className="flex items-center cursor-pointer gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left"
                         >
                           <LogOut className="w-4 h-4" />
                           <span>{t("admin.logoutButton")}</span>
@@ -174,7 +173,7 @@ export default function Navbar({
               ) : (
                 <button
                   onClick={onShowAdminLogin}
-                  className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
                   title={t("admin.login")}
                 >
                   <Lock className="w-4 h-4" />
