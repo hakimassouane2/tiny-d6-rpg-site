@@ -52,6 +52,12 @@ export default function TagDefinitionForm({
       setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   const handleSubmit = async (): Promise<void> => {
     if (!formData.code.trim()) {
       alert(t("tags.form.placeholders.enterCode"));
@@ -110,8 +116,11 @@ export default function TagDefinitionForm({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div 
+      className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+      onClick={handleBackdropClick}
+    >
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900">
             {editingTag ? t("tags.editTag") : t("tags.addNewTag")}

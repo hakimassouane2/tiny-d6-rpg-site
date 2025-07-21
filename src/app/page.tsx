@@ -555,7 +555,7 @@ export default function D6RPGSite() {
                   setEditingItem(null);
                   setShowForm(true);
                 }}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 {t("content.form.addNewContent")}

@@ -83,7 +83,7 @@ export default function AdminLogin({ onLogin, onCancel }: AdminLoginProps) {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex gap-2">
             <button
               type="submit"
               disabled={isSubmitting || !password.trim()}
@@ -102,12 +102,12 @@ export default function AdminLogin({ onLogin, onCancel }: AdminLoginProps) {
           </div>
         </form>
 
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        {/* <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-blue-800 text-sm">
             <strong>Note:</strong> This is a simple local authentication system.
             The password is stored in your browser&apos;s local storage.
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

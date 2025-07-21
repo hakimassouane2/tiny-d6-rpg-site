@@ -17,9 +17,9 @@
     "back": "Back"
   },
   "navigation": {
-    "title": "Tiny D6 RPG Content Manager",
-    "description": "Share and manage traits, objects, classes, ancestries for your Tiny D6 RPG campaign",
-    "descriptionNonAdmin": "Share and manage traits, objects, classes, and ancestries for your Tiny D6 RPG campaign"
+    "title": "Compendium Tiny Dungeon",
+    "description": "Browse traits, objects, classes, ancestries for Tiny Dungeon",
+    "descriptionNonAdmin": "Browse traits, objects, classes and ancestries for Tiny Dungeon"
   },
   "content": {
     "types": {

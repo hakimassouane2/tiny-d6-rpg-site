@@ -59,11 +59,11 @@ export default function Navbar({
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">D6</span>
             </div>
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">
+            <div className="hidden sm:block">
+              <h1 className="text-lg font-semibold text-gray-900 ">
                 {t("navigation.title")}
               </h1>
-              <p className="text-xs text-gray-500 hidden sm:block">
+              <p className="text-xs text-gray-500">
                 {isAdmin
                   ? t("navigation.description")
                   : t("navigation.descriptionNonAdmin")}

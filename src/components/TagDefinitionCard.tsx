@@ -47,12 +47,9 @@ export default function TagDefinitionCard({
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 hover:shadow-lg transition-shadow">
-      <div className="flex justify-between items-start mb-3">
+      <div className="flex justify-between items-start">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-              {t("tags.title")}
-            </span>
             <span className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded">
               {tag.code}
             </span>

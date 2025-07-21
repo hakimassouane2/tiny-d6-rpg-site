@@ -17,9 +17,9 @@
     "back": "Retour"
   },
   "navigation": {
-    "title": "Gestionnaire de Contenu Tiny D6 RPG",
-    "description": "Partagez et gérez des traits, objets, classes, héritages pour votre campagne Tiny D6 RPG",
-    "descriptionNonAdmin": "Partagez et gérez des traits, objets, classes et héritages pour votre campagne Tiny D6 RPG"
+    "title": "Compendium Tiny Dungeon",
+    "description": "Parcourez les traits, objets, classes, héritages pour Tiny Dungeon",
+    "descriptionNonAdmin": "Parcourez les traits, objets, classes et héritages pour Tiny Dungeon"
   },
   "content": {
     "types": {
