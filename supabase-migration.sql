@@ -319,3 +319,13 @@ INSERT INTO tag_definitions (code, name_en, name_fr, category, is_hidden) VALUES
 ('infused', 'Infused', 'Infusé', 'magic', false),
 ('imbued', 'Imbued', 'Imprégné', 'magic', false),
 ('attuned', 'Attuned', 'Harmonisé', 'magic', false); 
+
+-- Add requirement field to d6_content table
+ALTER TABLE d6_content ADD COLUMN requirement TEXT;
+
+-- Update existing traits to have NULL requirement (optional field)
+-- This ensures existing traits don't break
+UPDATE d6_content SET requirement = NULL WHERE requirement IS NULL;
+
+-- Add comment to document the field
+COMMENT ON COLUMN d6_content.requirement IS 'Prerequisite trait, class, or ancestry needed to take this trait'; 

@@ -36,6 +36,7 @@
       "type": "Type",
       "description": "Description",
       "rules": "Règles",
+      "requirement": "Prérequis",
       "tags": "Tags",
       "baseHp": "PV de Base",
       "baseAc": "CA de Base",
@@ -46,6 +47,7 @@
         "enterContentName": "Entrez le nom du contenu",
         "enterDescription": "Entrez la description",
         "enterRules": "Entrez les règles",
+        "enterRequirement": "Entrez le prérequis (ex: 'trait Alchimiste')",
         "enterTags": "Entrez les tags (séparés par des virgules)",
         "enterBaseTrait": "Entrez le trait de base",
         "searchContent": "Rechercher du contenu par nom, description ou tags..."
@@ -56,7 +58,8 @@
         "updating": "Mise à jour en cours...",
         "addContent": "Ajouter du Contenu",
         "updateContent": "Mettre à Jour le Contenu"
-      }
+      },
+      "requirementHelp": "Trait, classe ou héritage prérequis pour prendre ce trait"
     },
     "messages": {
       "pleaseEnterName": "Veuillez entrer un nom",

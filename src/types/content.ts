@@ -13,6 +13,7 @@ export interface BaseContent {
 // Specific interfaces for each content type
 export interface Trait extends BaseContent {
   type: "trait";
+  requirement: string | null;
 }
 
 export interface Object extends BaseContent {
@@ -51,6 +52,7 @@ export interface ContentFormData {
   description: string;
   tags: string;
   rules?: string;
+  requirement?: string;
   base_hp?: number;
   base_ac?: number;
   base_trait?: string;

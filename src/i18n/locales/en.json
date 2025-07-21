@@ -36,6 +36,7 @@
       "type": "Type",
       "description": "Description",
       "rules": "Rules",
+      "requirement": "Requirement",
       "tags": "Tags",
       "baseHp": "Base HP",
       "baseAc": "Base AC",
@@ -46,6 +47,7 @@
         "enterContentName": "Enter content name",
         "enterDescription": "Enter description",
         "enterRules": "Enter rules",
+        "enterRequirement": "Enter requirement (e.g., 'Alchemist trait')",
         "enterTags": "Enter tags (comma separated)",
         "enterBaseTrait": "Enter base trait",
         "searchContent": "Search content by name, description, or tags..."
@@ -56,7 +58,8 @@
         "updating": "Updating...",
         "addContent": "Add Content",
         "updateContent": "Update Content"
-      }
+      },
+      "requirementHelp": "Prerequisite trait, class, or ancestry needed to take this trait"
     },
     "messages": {
       "pleaseEnterName": "Please enter a name",

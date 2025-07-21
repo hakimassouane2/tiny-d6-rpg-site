@@ -1,7 +1,7 @@
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
-import { Ancestry, ContentType, D6Content, Object as ObjectType, TagDefinition } from "../types/content";
+import { Ancestry, ContentType, D6Content, Object as ObjectType, TagDefinition, Trait } from "../types/content";
 import { getTagTranslationSync } from "../utils/tagTranslation";
 
 interface ContentCardProps {
@@ -96,6 +96,18 @@ export default function ContentCard({
       </div>
 
       <p className="text-sm mb-3 opacity-80">{item.description}</p>
+
+      {/* Requirement field - only for traits */}
+      {item.type === "trait" && (item as Trait).requirement && (
+        <div className="mb-3">
+          <h4 className="font-semibold text-sm mb-1 text-red-600">
+            {t("content.form.requirement")}:
+          </h4>
+          <p className="text-sm bg-red-100 border border-red-500 p-2 rounded text-red-600">
+            {(item as Trait).requirement}
+          </p>
+        </div>
+      )}
 
       {item.type === "object" && (item as ObjectType).rules && (
         <div className="mb-3">

@@ -16,8 +16,8 @@ export interface Database {
           type: "trait" | "object" | "class" | "ancestry";
           description: string | null;
           rules: string | null;
+          requirement: string | null;
           tags: string[] | null;
-          is_hidden: boolean | null;
           created_at: string;
           updated_at: string;
         };
@@ -27,8 +27,8 @@ export interface Database {
           type: "trait" | "object" | "class" | "ancestry";
           description?: string | null;
           rules?: string | null;
+          requirement?: string | null;
           tags?: string[] | null;
-          is_hidden?: boolean | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -38,8 +38,8 @@ export interface Database {
           type?: "trait" | "object" | "class" | "ancestry";
           description?: string | null;
           rules?: string | null;
+          requirement?: string | null;
           tags?: string[] | null;
-          is_hidden?: boolean | null;
           created_at?: string;
           updated_at?: string;
         };

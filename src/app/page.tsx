@@ -15,6 +15,7 @@ import {
   D6Content,
   Object as ObjectType,
   TagDefinition,
+  Trait,
 } from "../types/content";
 import { contentToMarkdown } from "../utils/markdown";
 import {
@@ -58,6 +59,7 @@ function ContentForm({
     description: "",
     rules: "",
     tags: "",
+    requirement: "",
     base_hp: 0,
     base_ac: 3,
     base_trait: "",
@@ -69,6 +71,7 @@ function ContentForm({
     if (editingItem) {
       const ancestryItem = editingItem as Ancestry;
       const objectItem = editingItem as ObjectType;
+      const traitItem = editingItem as Trait;
       
       setFormData({
         name: editingItem.name,
@@ -76,6 +79,7 @@ function ContentForm({
         description: editingItem.description || "",
         rules: editingItem.type === "object" ? (objectItem.rules || "") : "",
         tags: editingItem.tags ? editingItem.tags.join(", ") : "",
+        requirement: editingItem.type === "trait" ? (traitItem.requirement || "") : "",
         base_hp: editingItem.type === "ancestry" ? (ancestryItem.base_hp || 0) : 0,
         base_ac: editingItem.type === "ancestry" ? (ancestryItem.base_ac || 0) : 0,
         base_trait: editingItem.type === "ancestry" ? (ancestryItem.base_trait || "") : "",
@@ -101,8 +105,13 @@ function ContentForm({
         name: formData.name,
         type: formData.type,
         description: formData.description || null,
-        rules: formData.rules || null,
         tags: tagsArray.length > 0 ? tagsArray : null,
+        ...(formData.type === "object" && {
+          rules: formData.rules || null,
+        }),
+        ...(formData.type === "trait" && {
+          requirement: formData.requirement || null,
+        }),
         ...(formData.type === "ancestry" && {
           base_hp: formData.base_hp || 0,
           base_ac: formData.base_ac || 0,
@@ -130,6 +139,7 @@ function ContentForm({
             description: "",
             rules: "",
             tags: "",
+            requirement: "",
             base_hp: 0,
             base_ac: 3,
             base_trait: "",
@@ -252,6 +262,26 @@ function ContentForm({
                 placeholder={t("content.form.placeholders.enterRules")}
                 disabled={isSubmitting}
               />
+            </div>
+          )}
+
+          {/* Requirement field - only for traits */}
+          {formData.type === "trait" && (
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                {t("content.form.requirement")}
+              </label>
+              <input
+                type="text"
+                value={formData.requirement}
+                onChange={handleInputChange("requirement")}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                placeholder={t("content.form.placeholders.enterRequirement")}
+                disabled={isSubmitting}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                {t("content.form.requirementHelp")}
+              </p>
             </div>
           )}
 
