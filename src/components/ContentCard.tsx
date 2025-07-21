@@ -1,4 +1,4 @@
-import { Edit, Trash2 } from "lucide-react";
+import { Copy, Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
 import { Ancestry, ContentType, D6Content, Object as ObjectType, TagDefinition, Trait } from "../types/content";
@@ -8,6 +8,7 @@ interface ContentCardProps {
   item: D6Content;
   onDelete?: (id: string, type: ContentType) => void;
   onEdit?: (item: D6Content) => void;
+  onDuplicate?: (item: D6Content) => void;
   isAdmin: boolean;
   tagDefinitions?: TagDefinition[];
 }
@@ -16,6 +17,7 @@ export default function ContentCard({
   item,
   onDelete,
   onEdit,
+  onDuplicate,
   isAdmin,
   tagDefinitions = [],
 }: ContentCardProps) {
@@ -48,6 +50,12 @@ export default function ContentCard({
     }
   };
 
+  const handleDuplicateClick = () => {
+    if (onDuplicate) {
+      onDuplicate(item);
+    }
+  };
+
   return (
     <div
       className={`border-2 rounded-lg p-4 ${
@@ -64,6 +72,15 @@ export default function ContentCard({
           </span>
           {isAdmin && (
             <>
+              {onDuplicate && (
+                <button
+                  onClick={handleDuplicateClick}
+                  className="p-1 rounded transition-colors text-green-500 hover:text-green-700 hover:bg-green-50 cursor-pointer"
+                  title={t("content.actions.duplicate")}
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              )}
               {onEdit && (
                 <button
                   onClick={handleEditClick}

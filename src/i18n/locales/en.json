@@ -71,10 +71,9 @@
       "noMoreContent": "No more content to load."
     },
     "actions": {
-      "showMarkdown": "Show Markdown",
-      "hideMarkdown": "Hide Markdown",
-      "exportToMarkdown": "Export to Markdown",
-      "edit": "Edit"
+      "edit": "Edit",
+      "delete": "Delete",
+      "duplicate": "Duplicate"
     }
   },
   "tags": {

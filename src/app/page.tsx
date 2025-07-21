@@ -119,7 +119,7 @@ function ContentForm({
         }),
       };
 
-      if (editingItem && onEdit) {
+      if (editingItem && editingItem.id && onEdit) {
         // Update existing content
         const result = await updateContent(editingItem.id, contentData);
         if (result) {
@@ -129,7 +129,7 @@ function ContentForm({
           alert(t("content.messages.failedToUpdateContent"));
         }
       } else {
-        // Add new content
+        // Add new content (including duplicates)
         const result = await addContent(contentData);
         if (result) {
           onAdd(result);
@@ -544,6 +544,17 @@ export default function D6RPGSite() {
     setShowForm(false);
   };
 
+  const handleDuplicateContent = (item: D6Content) => {
+    // Create a duplicate item without id to trigger form pre-filling
+    const { id, ...itemWithoutId } = item;
+    const duplicateItem = {
+      ...itemWithoutId,
+      name: `${item.name} (Copy)`,
+    } as D6Content;
+    setEditingItem(duplicateItem);
+    setShowForm(true);
+  };
+
   const handleAdminLogin = (password: string) => {
     if (password === ADMIN_PASSWORD) {
       setAdminState({ isLoggedIn: true, isAdmin: true, password });
@@ -688,6 +699,7 @@ export default function D6RPGSite() {
               item={item}
               onDelete={(id, type) => handleDeleteContent(id, type)}
               onEdit={handleEditContent}
+              onDuplicate={handleDuplicateContent}
               isAdmin={adminState.isLoggedIn}
               tagDefinitions={tagDefinitions}
             />

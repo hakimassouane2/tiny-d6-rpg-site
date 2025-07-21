@@ -71,10 +71,9 @@
       "noMoreContent": "Aucun autre contenu à charger."
     },
     "actions": {
-      "showMarkdown": "Afficher Markdown",
-      "hideMarkdown": "Masquer Markdown",
-      "exportToMarkdown": "Exporter en Markdown",
-      "edit": "Modifier"
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "duplicate": "Dupliquer"
     }
   },
   "tags": {
