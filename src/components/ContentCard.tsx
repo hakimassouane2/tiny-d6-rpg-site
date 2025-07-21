@@ -1,4 +1,4 @@
-import { Copy, Edit, Trash2 } from "lucide-react";
+import { Copy, Edit, ShoppingBag, Star, Swords, Trash2, User } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
 import { Ancestry, ContentType, D6Content, Object as ObjectType, TagDefinition, Trait } from "../types/content";
@@ -30,6 +30,21 @@ export default function ContentCard({
   };
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const getTypeIcon = (type: ContentType) => {
+    switch (type) {
+      case "trait":
+        return <Star className="w-5 h-5 text-blue-600" />;
+      case "object":
+        return <ShoppingBag className="w-5 h-5 text-green-600" />;
+      case "class":
+        return <Swords className="w-5 h-5 text-purple-600" />;
+      case "ancestry":
+        return <User className="w-5 h-5 text-orange-600" />;
+      default:
+        return null;
+    }
+  };
 
   const handleDeleteClick = () => {
     if (onDelete) {
@@ -65,7 +80,12 @@ export default function ContentCard({
       }`}
     >
       <div className="flex justify-between items-start mb-2">
-        <h3 className="font-bold text-lg">{item.name}</h3>
+        <div className="flex items-center gap-2">
+          <div>
+            {getTypeIcon(item.type)}
+          </div>
+          <h3 className="font-bold text-lg">{item.name}</h3>
+        </div>
         <div className="flex items-center gap-2">
           <span className="text-xs px-2 py-1 rounded-full bg-white bg-opacity-50 capitalize">
             {t(`content.types.${item.type}`)}
