@@ -359,6 +359,13 @@ export default function D6RPGSite() {
   const [showAdminLogin, setShowAdminLogin] = useState<boolean>(false);
   const [editingItem, setEditingItem] = useState<D6Content | null>(null);
 
+  // Lazy loading state
+  const [displayedContent, setDisplayedContent] = useState<D6Content[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const ITEMS_PER_PAGE = 12;
+
   // Simple admin password (you can change this)
   const ADMIN_PASSWORD = "admin123";
 
@@ -398,7 +405,6 @@ export default function D6RPGSite() {
   useEffect(() => {
     let filtered = content;
 
-    // Filter by visibility
     if (selectedType !== "all") {
       filtered = filtered.filter(
         (item: D6Content) => item.type === selectedType
@@ -421,6 +427,11 @@ export default function D6RPGSite() {
     }
 
     setFilteredContent(filtered);
+    
+    // Reset lazy loading when filters change
+    setCurrentPage(1);
+    setDisplayedContent(filtered.slice(0, ITEMS_PER_PAGE));
+    setHasMore(filtered.length > ITEMS_PER_PAGE);
   }, [
     content,
     selectedType,
@@ -428,6 +439,50 @@ export default function D6RPGSite() {
     language,
     tagDefinitions,
   ]);
+
+  // Load more content
+  const loadMoreContent = () => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    const nextPage = currentPage + 1;
+    const startIndex = (nextPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const newItems = filteredContent.slice(startIndex, endIndex);
+
+    setDisplayedContent(prev => {
+      // Prevent duplicates by checking if items already exist
+      const existingIds = new Set(prev.map(item => item.id));
+      const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+      return [...prev, ...uniqueNewItems];
+    });
+    setCurrentPage(nextPage);
+    setHasMore(endIndex < filteredContent.length);
+    setIsLoadingMore(false);
+  };
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          loadMoreContent();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const sentinel = document.getElementById('scroll-sentinel');
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    return () => {
+      if (sentinel) {
+        observer.unobserve(sentinel);
+      }
+    };
+  }, [hasMore, isLoadingMore, filteredContent]);
 
   const handleAddContent = (newContent: D6Content): void => {
     setContent([newContent, ...content]);
@@ -597,7 +652,7 @@ export default function D6RPGSite() {
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredContent.map((item: D6Content) => (
+          {displayedContent.map((item: D6Content) => (
             <ContentCard
               key={item.id}
               item={item}
@@ -607,6 +662,17 @@ export default function D6RPGSite() {
               tagDefinitions={tagDefinitions}
             />
           ))}
+          {isLoadingMore && (
+            <div className="col-span-full text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="text-gray-600 mt-2">{t("common.loadingMore")}</p>
+            </div>
+          )}
+          {!hasMore && displayedContent.length > 0 && (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-500 text-lg">{t("content.messages.noMoreContent")}</p>
+            </div>
+          )}
         </div>
 
         {filteredContent.length === 0 && (
@@ -639,6 +705,7 @@ export default function D6RPGSite() {
           />
         )}
       </div>
+      <div id="scroll-sentinel" className="h-1"></div>
     </div>
   );
 }

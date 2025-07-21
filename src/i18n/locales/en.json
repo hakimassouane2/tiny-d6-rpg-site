@@ -1,6 +1,7 @@
 {
   "common": {
     "loading": "Loading...",
+    "loadingMore": "Loading more...",
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
@@ -63,7 +64,8 @@
       "failedToUpdateContent": "Failed to update content. Please try again.",
       "failedToDeleteContent": "Failed to delete content. Please try again.",
       "clickToConfirmDeletion": "Click again to confirm deletion",
-      "noContentFound": "No content found matching your criteria."
+      "noContentFound": "No content found matching your criteria.",
+      "noMoreContent": "No more content to load."
     },
     "actions": {
       "showMarkdown": "Show Markdown",
@@ -94,7 +96,8 @@
       }
     },
     "messages": {
-      "failedToDeleteTag": "Failed to delete tag definition"
+      "failedToDeleteTag": "Failed to delete tag definition",
+      "noMoreTags": "No more tags to load."
     }
   },
   "admin": {

@@ -26,6 +26,13 @@ export default function TagsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
 
+  // Lazy loading state
+  const [displayedTags, setDisplayedTags] = useState<TagDefinition[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const ITEMS_PER_PAGE = 12;
+
   // Simple admin password (you can change this)
   const ADMIN_PASSWORD = "admin123";
 
@@ -45,10 +52,10 @@ export default function TagsPage() {
 
   // Filter tags based on search term
   useEffect(() => {
-    if (!searchTerm.trim()) {
-      setFilteredTags(tagDefinitions);
-    } else {
-      const filtered = tagDefinitions.filter((tag) => {
+    let filtered = tagDefinitions;
+    
+    if (searchTerm.trim()) {
+      filtered = tagDefinitions.filter((tag) => {
         const searchLower = searchTerm.toLowerCase();
         return (
           tag.code.toLowerCase().includes(searchLower) ||
@@ -57,9 +64,59 @@ export default function TagsPage() {
           (tag.category && tag.category.toLowerCase().includes(searchLower))
         );
       });
-      setFilteredTags(filtered);
     }
+    
+    setFilteredTags(filtered);
+    
+    // Reset lazy loading when search changes
+    setCurrentPage(1);
+    setDisplayedTags(filtered.slice(0, ITEMS_PER_PAGE));
+    setHasMore(filtered.length > ITEMS_PER_PAGE);
   }, [searchTerm, tagDefinitions]);
+
+  // Load more tags
+  const loadMoreTags = () => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    const nextPage = currentPage + 1;
+    const startIndex = (nextPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const newItems = filteredTags.slice(startIndex, endIndex);
+
+    setDisplayedTags(prev => {
+      // Prevent duplicates by checking if items already exist
+      const existingIds = new Set(prev.map(tag => tag.id));
+      const uniqueNewItems = newItems.filter(tag => !existingIds.has(tag.id));
+      return [...prev, ...uniqueNewItems];
+    });
+    setCurrentPage(nextPage);
+    setHasMore(endIndex < filteredTags.length);
+    setIsLoadingMore(false);
+  };
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          loadMoreTags();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const sentinel = document.getElementById('tags-scroll-sentinel');
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    return () => {
+      if (sentinel) {
+        observer.unobserve(sentinel);
+      }
+    };
+  }, [hasMore, isLoadingMore, filteredTags]);
 
   const loadTagDefinitions = async () => {
     setIsLoading(true);
@@ -217,7 +274,7 @@ export default function TagsPage() {
         {/* Tag Definitions Grid */}
         {!isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTags.map((tag) => (
+            {displayedTags.map((tag) => (
               <TagDefinitionCard
                 key={tag.id}
                 tag={tag}
@@ -226,6 +283,17 @@ export default function TagsPage() {
                 isAdmin={isAdmin}
               />
             ))}
+            {isLoadingMore && (
+              <div className="col-span-full text-center py-4">
+                <div className="text-gray-500">{t("common.loadingMore")}</div>
+              </div>
+            )}
+            {!hasMore && displayedTags.length > 0 && (
+              <div className="col-span-full text-center py-4">
+                <div className="text-gray-500">{t("tags.noMoreTags")}</div>
+              </div>
+            )}
+            <div id="tags-scroll-sentinel" className="h-1"></div>
           </div>
         )}
 

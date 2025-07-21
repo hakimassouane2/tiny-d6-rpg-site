@@ -1,10 +1,11 @@
 {
   "common": {
     "loading": "Chargement...",
+    "loadingMore": "Chargement de plus...",
     "error": "Erreur",
     "success": "Succès",
     "cancel": "Annuler",
-    "save": "Sauvegarder",
+    "save": "Enregistrer",
     "delete": "Supprimer",
     "confirm": "Confirmer",
     "close": "Fermer",
@@ -63,7 +64,8 @@
       "failedToUpdateContent": "Échec de la mise à jour du contenu. Veuillez réessayer.",
       "failedToDeleteContent": "Échec de la suppression du contenu. Veuillez réessayer.",
       "clickToConfirmDeletion": "Cliquez à nouveau pour confirmer la suppression",
-      "noContentFound": "Aucun contenu trouvé correspondant à vos critères."
+      "noContentFound": "Aucun contenu trouvé correspondant à vos critères.",
+      "noMoreContent": "Aucun autre contenu à charger."
     },
     "actions": {
       "showMarkdown": "Afficher Markdown",
@@ -94,7 +96,8 @@
       }
     },
     "messages": {
-      "failedToDeleteTag": "Échec de la suppression de la définition de tag"
+      "failedToDeleteTag": "Échec de la suppression de la définition de tag",
+      "noMoreTags": "Aucun autre tag à charger."
     }
   },
   "admin": {
