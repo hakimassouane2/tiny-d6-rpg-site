@@ -1,6 +1,7 @@
 "use client";
 
-import { Plus, Search } from "lucide-react";
+import { ArrowLeft, Plus, Search } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import AdminLogin from "../../components/AdminLogin";
 import Navbar from "../../components/Navbar";
@@ -11,7 +12,7 @@ import { AdminState, TagDefinition } from "../../types/content";
 import { deleteTagDefinition, fetchTagDefinitions } from "../../utils/supabase";
 
 export default function TagsPage() {
-  const {} = useI18n();
+  const { t } = useI18n();
   const [adminState, setAdminState] = useState<AdminState>({
     isLoggedIn: false,
     isAdmin: false,
@@ -25,9 +26,21 @@ export default function TagsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
 
-  // Load tag definitions on component mount
+  // Simple admin password (you can change this)
+  const ADMIN_PASSWORD = "admin123";
+
+  // Load tag definitions and check admin authentication on component mount
   useEffect(() => {
     loadTagDefinitions();
+    // Check if admin is already logged in
+    const savedPassword = localStorage.getItem("admin_password");
+    if (savedPassword === ADMIN_PASSWORD) {
+      setAdminState({
+        isLoggedIn: true,
+        isAdmin: true,
+        password: savedPassword,
+      });
+    }
   }, []);
 
   // Filter tags based on search term
@@ -78,11 +91,11 @@ export default function TagsPage() {
       if (success) {
         setTagDefinitions((prev) => prev.filter((t) => t.id !== id));
       } else {
-        alert("Failed to delete tag definition");
+        alert(t("tags.messages.failedToDeleteTag"));
       }
     } catch (error) {
       console.error("Error deleting tag definition:", error);
-      alert("Failed to delete tag definition");
+      alert(t("tags.messages.failedToDeleteTag"));
     }
   };
 
@@ -107,8 +120,9 @@ export default function TagsPage() {
   // Admin login handlers
   const handleAdminLogin = (password: string) => {
     // Simple admin check - in a real app, this would be more secure
-    if (password === "admin123") {
+    if (password === ADMIN_PASSWORD) {
       setAdminState({ isLoggedIn: true, isAdmin: true, password });
+      localStorage.setItem("admin_password", password);
       setShowAdminLogin(false);
     } else {
       alert("Incorrect password");
@@ -117,6 +131,7 @@ export default function TagsPage() {
 
   const handleAdminLogout = () => {
     setAdminState({ isLoggedIn: false, isAdmin: false, password: "" });
+    localStorage.removeItem("admin_password");
   };
 
   const handleShowAdminLogin = () => {
@@ -139,13 +154,22 @@ export default function TagsPage() {
       />
 
       <div className="container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t("common.back")}
+          </Link>
+        </div>
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Tag Definitions
+            {t("tags.title")}
           </h1>
-          <p className="text-gray-600">
-            Manage tag definitions for your Tiny D6 RPG campaign
-          </p>
+          <p className="text-gray-600">{t("tags.description")}</p>
         </div>
 
         {/* Admin Login */}
@@ -169,7 +193,7 @@ export default function TagsPage() {
                 />
                 <input
                   type="text"
-                  placeholder="Search tags by code, name, or category..."
+                  placeholder={t("tags.searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -181,7 +205,7 @@ export default function TagsPage() {
               className="ml-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               <Plus size={20} />
-              Add New Tag Definition
+              {t("tags.addNewTag")}
             </button>
           </div>
         )}
@@ -189,7 +213,7 @@ export default function TagsPage() {
         {/* Loading State */}
         {isLoading && (
           <div className="text-center py-8">
-            <div className="text-gray-500">Loading...</div>
+            <div className="text-gray-500">{t("common.loading")}</div>
           </div>
         )}
 
@@ -212,9 +236,7 @@ export default function TagsPage() {
         {!isLoading && filteredTags.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-500 mb-4">
-              {searchTerm
-                ? "No tag definitions found matching your search."
-                : "No tag definitions found."}
+              {searchTerm ? t("tags.noTagsFoundSearch") : t("tags.noTagsFound")}
             </div>
             {isAdmin && !searchTerm && (
               <button
@@ -222,7 +244,7 @@ export default function TagsPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 <Plus size={20} />
-                Add New Tag Definition
+                {t("tags.addNewTag")}
               </button>
             )}
           </div>

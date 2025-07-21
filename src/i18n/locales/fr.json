@@ -13,7 +13,8 @@
     "download": "Télécharger",
     "language": "Langue",
     "english": "Anglais",
-    "french": "Français"
+    "french": "Français",
+    "back": "Retour"
   },
   "navigation": {
     "title": "Gestionnaire de Contenu Tiny D6 RPG",
@@ -69,6 +70,31 @@
       "hideMarkdown": "Masquer Markdown",
       "exportToMarkdown": "Exporter en Markdown",
       "edit": "Modifier"
+    }
+  },
+  "tags": {
+    "title": "Définitions de Tags",
+    "description": "Gérez les définitions de tags pour votre campagne Tiny D6 RPG",
+    "addNewTag": "Ajouter une Nouvelle Définition de Tag",
+    "editTag": "Modifier la Définition de Tag",
+    "searchPlaceholder": "Rechercher des tags par code, nom ou catégorie...",
+    "noTagsFound": "Aucune définition de tag trouvée.",
+    "noTagsFoundSearch": "Aucune définition de tag trouvée correspondant à votre recherche.",
+    "form": {
+      "code": "Code",
+      "nameEn": "Nom (Anglais)",
+      "nameFr": "Nom (Français)",
+      "category": "Catégorie",
+      "hidden": "Masqué",
+      "placeholders": {
+        "enterCode": "Entrez le code du tag",
+        "enterNameEn": "Entrez le nom en anglais",
+        "enterNameFr": "Entrez le nom en français",
+        "enterCategory": "Entrez la catégorie (optionnel)"
+      }
+    },
+    "messages": {
+      "failedToDeleteTag": "Échec de la suppression de la définition de tag"
     }
   },
   "admin": {

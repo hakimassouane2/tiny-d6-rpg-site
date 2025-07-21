@@ -13,7 +13,8 @@
     "download": "Download",
     "language": "Language",
     "english": "English",
-    "french": "French"
+    "french": "French",
+    "back": "Back"
   },
   "navigation": {
     "title": "Tiny D6 RPG Content Manager",
@@ -69,6 +70,31 @@
       "hideMarkdown": "Hide Markdown",
       "exportToMarkdown": "Export to Markdown",
       "edit": "Edit"
+    }
+  },
+  "tags": {
+    "title": "Tag Definitions",
+    "description": "Manage tag definitions for your Tiny D6 RPG campaign",
+    "addNewTag": "Add New Tag Definition",
+    "editTag": "Edit Tag Definition",
+    "searchPlaceholder": "Search tags by code, name, or category...",
+    "noTagsFound": "No tag definitions found.",
+    "noTagsFoundSearch": "No tag definitions found matching your search.",
+    "form": {
+      "code": "Code",
+      "nameEn": "Name (English)",
+      "nameFr": "Name (French)",
+      "category": "Category",
+      "hidden": "Hidden",
+      "placeholders": {
+        "enterCode": "Enter tag code",
+        "enterNameEn": "Enter name in English",
+        "enterNameFr": "Enter name in French",
+        "enterCategory": "Enter category (optional)"
+      }
+    },
+    "messages": {
+      "failedToDeleteTag": "Failed to delete tag definition"
     }
   },
   "admin": {

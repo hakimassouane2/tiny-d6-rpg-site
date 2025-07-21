@@ -19,7 +19,7 @@ export default function TagDefinitionForm({
   onClose,
   editingTag,
 }: TagDefinitionFormProps) {
-  const {} = useI18n();
+  const { t } = useI18n();
   const [formData, setFormData] = useState<TagDefinitionFormData>({
     code: "",
     name_en: "",
@@ -54,17 +54,17 @@ export default function TagDefinitionForm({
 
   const handleSubmit = async (): Promise<void> => {
     if (!formData.code.trim()) {
-      alert("Please enter a tag code");
+      alert(t("tags.form.placeholders.enterCode"));
       return;
     }
 
     if (!formData.name_en.trim()) {
-      alert("Please enter an English name");
+      alert(t("tags.form.placeholders.enterNameEn"));
       return;
     }
 
     if (!formData.name_fr.trim()) {
-      alert("Please enter a French name");
+      alert(t("tags.form.placeholders.enterNameFr"));
       return;
     }
 
@@ -114,7 +114,7 @@ export default function TagDefinitionForm({
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900">
-            {editingTag ? "Edit Tag Definition" : "Add New Tag Definition"}
+            {editingTag ? t("tags.editTag") : t("tags.addNewTag")}
           </h2>
           <button
             onClick={onClose}
@@ -128,14 +128,14 @@ export default function TagDefinitionForm({
           {/* Code Field */}
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-700">
-              Tag Code (Slug)
+              {t("tags.form.code")}
             </label>
             <input
               type="text"
               value={formData.code}
               onChange={handleInputChange("code")}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-              placeholder="e.g., strong, agile, magical"
+              placeholder={t("tags.form.placeholders.enterCode")}
               disabled={isSubmitting}
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -147,27 +147,27 @@ export default function TagDefinitionForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-700">
-                English Name
+                {t("tags.form.nameEn")}
               </label>
               <input
                 type="text"
                 value={formData.name_en}
                 onChange={handleInputChange("name_en")}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                placeholder="Enter English name"
+                placeholder={t("tags.form.placeholders.enterNameEn")}
                 disabled={isSubmitting}
               />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-700">
-                French Name
+                {t("tags.form.nameFr")}
               </label>
               <input
                 type="text"
                 value={formData.name_fr}
                 onChange={handleInputChange("name_fr")}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                placeholder="Enter French name"
+                placeholder={t("tags.form.placeholders.enterNameFr")}
                 disabled={isSubmitting}
               />
             </div>
@@ -176,14 +176,14 @@ export default function TagDefinitionForm({
           {/* Category */}
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-700">
-              Category (Optional)
+              {t("tags.form.category")} (Optional)
             </label>
             <input
               type="text"
               value={formData.category}
               onChange={handleInputChange("category")}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-              placeholder="e.g., combat, magic, equipment"
+              placeholder={t("tags.form.placeholders.enterCategory")}
               disabled={isSubmitting}
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -205,7 +205,7 @@ export default function TagDefinitionForm({
               htmlFor="is_hidden"
               className="text-sm font-medium text-gray-700"
             >
-              Hide from players
+              {t("tags.form.hidden")}
             </label>
           </div>
 
@@ -216,7 +216,7 @@ export default function TagDefinitionForm({
               className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
               disabled={isSubmitting}
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               onClick={handleSubmit}
@@ -225,11 +225,11 @@ export default function TagDefinitionForm({
             >
               {isSubmitting
                 ? editingTag
-                  ? "Updating..."
-                  : "Adding..."
+                  ? t("content.form.labels.updating")
+                  : t("content.form.labels.adding")
                 : editingTag
-                ? "Update Tag"
-                : "Add Tag"}
+                ? t("content.actions.edit")
+                : t("content.form.labels.addContent")}
             </button>
           </div>
         </div>

@@ -18,7 +18,7 @@ export default function TagDefinitionCard({
   onEdit,
   isAdmin,
 }: TagDefinitionCardProps) {
-  const { language } = useI18n();
+  const { language, t } = useI18n();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleDeleteClick = () => {
@@ -51,14 +51,14 @@ export default function TagDefinitionCard({
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-              Tag Definition
+              {t("tags.title")}
             </span>
             <span className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded">
               {tag.code}
             </span>
             {tag.is_hidden && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                Hidden
+                {t("tags.form.hidden")}
               </span>
             )}
           </div>
@@ -72,7 +72,7 @@ export default function TagDefinitionCard({
             <button
               onClick={handleEditClick}
               className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
-              title="Edit tag definition"
+              title={t("content.actions.edit")}
             >
               <Edit size={16} />
             </button>
@@ -85,8 +85,8 @@ export default function TagDefinitionCard({
               }`}
               title={
                 showDeleteConfirm
-                  ? "Click again to confirm deletion"
-                  : "Delete tag definition"
+                  ? t("content.messages.clickToConfirmDeletion")
+                  : t("common.delete")
               }
             >
               <Trash2 size={16} />
@@ -98,7 +98,8 @@ export default function TagDefinitionCard({
       {/* Language Toggle Preview */}
       <div className="mb-3">
         <h4 className="font-semibold text-sm mb-1 text-gray-700">
-          Preview ({language === "en" ? "English" : "French"}):
+          Preview (
+          {language === "en" ? t("common.english") : t("common.french")}):
         </h4>
         <div className="text-xs text-gray-500 space-y-1">
           <div>
@@ -111,7 +112,7 @@ export default function TagDefinitionCard({
       {tag.category && (
         <div className="mb-3">
           <h4 className="font-semibold text-sm mb-1 text-gray-700">
-            Category:
+            {t("tags.form.category")}:
           </h4>
           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
             {tag.category}
