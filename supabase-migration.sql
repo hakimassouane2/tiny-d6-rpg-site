@@ -318,7 +318,7 @@ INSERT INTO tag_definitions (code, name_en, name_fr, category, is_hidden) VALUES
 ('enchanted', 'Enchanted', 'Enchanté', 'magic', false),
 ('infused', 'Infused', 'Infusé', 'magic', false),
 ('imbued', 'Imbued', 'Imprégné', 'magic', false),
-('attuned', 'Attuned', 'Harmonisé', 'magic', false); 
+('attuned', 'Attuned', 'Harmonisé', 'magic', false);
 
 -- Add requirement field to d6_content table
 ALTER TABLE d6_content ADD COLUMN requirement TEXT;
@@ -328,4 +328,24 @@ ALTER TABLE d6_content ADD COLUMN requirement TEXT;
 UPDATE d6_content SET requirement = NULL WHERE requirement IS NULL;
 
 -- Add comment to document the field
-COMMENT ON COLUMN d6_content.requirement IS 'Prerequisite trait, class, or ancestry needed to take this trait'; 
+COMMENT ON COLUMN d6_content.requirement IS 'Prerequisite trait, class, or ancestry needed to take this trait';
+
+-- Create spells table (drop if exists to ensure proper structure)
+DROP TABLE IF EXISTS spells CASCADE;
+
+CREATE TABLE spells (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  spell_level TEXT NOT NULL CHECK (spell_level IN ('minor', 'major')),
+  rules TEXT,
+  tags TEXT[],
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security (optional)
+ALTER TABLE spells ENABLE ROW LEVEL SECURITY;
+
+-- Create a policy that allows all operations (for demo purposes)
+CREATE POLICY "Allow all operations on spells" ON spells FOR ALL USING (true); 

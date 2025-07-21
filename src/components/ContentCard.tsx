@@ -1,8 +1,9 @@
-import { Copy, Edit, ShoppingBag, Star, Swords, Trash2, User } from "lucide-react";
+import { Copy, Edit, Gem, Star, Swords, Trash2, User, Wand2 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
-import { Ancestry, ContentType, D6Content, Object as ObjectType, TagDefinition, Trait } from "../types/content";
+import { Ancestry, ContentType, D6Content, Object as ObjectType, Spell, TagDefinition, Trait } from "../types/content";
 import { getTagTranslationSync } from "../utils/tagTranslation";
+import { getSpellLevelTranslation } from "../utils/translation";
 
 interface ContentCardProps {
   item: D6Content;
@@ -25,8 +26,9 @@ export default function ContentCard({
   const typeColors: Record<ContentType, string> = {
     trait: "bg-blue-50 border-blue-200 text-blue-800",
     object: "bg-green-50 border-green-200 text-green-800",
-    class: "bg-purple-50 border-purple-200 text-purple-800",
+    class: "bg-red-50 border-red-200 text-red-800",
     ancestry: "bg-orange-50 border-orange-200 text-orange-800",
+    spell: "bg-purple-50 border-purple-200 text-purple-800",
   };
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -36,11 +38,13 @@ export default function ContentCard({
       case "trait":
         return <Star className="w-5 h-5 text-blue-600" />;
       case "object":
-        return <ShoppingBag className="w-5 h-5 text-green-600" />;
+        return <Gem className="w-5 h-5 text-green-600" />;
       case "class":
-        return <Swords className="w-5 h-5 text-purple-600" />;
+        return <Swords className="w-5 h-5 text-red-600" />;
       case "ancestry":
         return <User className="w-5 h-5 text-orange-600" />;
+      case "spell":
+        return <Wand2 className="w-5 h-5 text-purple-600" />;
       default:
         return null;
     }
@@ -81,9 +85,7 @@ export default function ContentCard({
     >
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-center gap-2">
-          <div>
-            {getTypeIcon(item.type)}
-          </div>
+          <div>{getTypeIcon(item.type)}</div>
           <h3 className="font-bold text-lg">{item.name}</h3>
         </div>
         <div className="flex items-center gap-2">
@@ -154,6 +156,30 @@ export default function ContentCard({
           <p className="text-sm bg-white bg-opacity-30 p-2 rounded">
             {(item as ObjectType).rules}
           </p>
+        </div>
+      )}
+
+      {/* Spell-specific properties */}
+      {item.type === "spell" && (
+        <div className="mb-3">
+          {(item as Spell).rules && (
+            <div className="mb-3">
+              <h4 className="font-semibold text-sm mb-1">
+                {t("content.form.rules")}:
+              </h4>
+              <p className="text-sm bg-white bg-opacity-30 p-2 rounded">
+                {(item as Spell).rules}
+              </p>
+            </div>
+          )}
+          <div className="mb-3">
+            <h4 className="font-semibold text-sm mb-1 text-purple-700">
+              {t("content.form.spellLevel")}:
+            </h4>
+            <span className="text-sm bg-purple-100 border border-purple-300 px-2 py-1 rounded capitalize">
+              {getSpellLevelTranslation((item as Spell).spell_level, language)}
+            </span>
+          </div>
         </div>
       )}
 

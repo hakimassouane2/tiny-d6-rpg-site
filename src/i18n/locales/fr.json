@@ -27,7 +27,8 @@
       "trait": "Trait",
       "object": "Objet",
       "class": "Classe",
-      "ancestry": "Héritage"
+      "ancestry": "Héritage",
+      "spell": "Sort"
     },
     "form": {
       "addNewContent": "Ajouter du Nouveau Contenu",
@@ -37,6 +38,7 @@
       "description": "Description",
       "rules": "Règles",
       "requirement": "Prérequis",
+      "spellLevel": "Niveau de Sort",
       "tags": "Tags",
       "baseHp": "PV de Base",
       "baseAc": "CA de Base",
@@ -59,6 +61,8 @@
         "addContent": "Ajouter du Contenu",
         "updateContent": "Mettre à Jour le Contenu"
       },
+      "minorSpell": "Sort Mineur",
+      "majorSpell": "Sort Majeur",
       "requirementHelp": "Trait, classe ou héritage prérequis pour prendre ce trait"
     },
     "messages": {

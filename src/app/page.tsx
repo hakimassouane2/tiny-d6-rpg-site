@@ -14,6 +14,7 @@ import {
   ContentType,
   D6Content,
   Object as ObjectType,
+  Spell,
   TagDefinition,
   Trait,
 } from "../types/content";
@@ -27,14 +28,14 @@ import {
 } from "../utils/supabase";
 import { getTagTranslationSync } from "../utils/tagTranslation";
 
-const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry"];
+const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry", "spell"];
 
 // Get content types based on admin status
 const getContentTypesForUser = (isAdmin: boolean): ContentType[] => {
   if (isAdmin) {
     return CONTENT_TYPES;
   }
-  return ["trait", "object", "class", "ancestry"];
+  return ["trait", "object", "class", "ancestry", "spell"];
 };
 
 interface ContentFormProps {
@@ -60,6 +61,7 @@ function ContentForm({
     rules: "",
     tags: "",
     requirement: "",
+    spell_level: "minor",
     base_hp: 0,
     base_ac: 3,
     base_trait: "",
@@ -80,6 +82,7 @@ function ContentForm({
         rules: editingItem.type === "object" ? (objectItem.rules || "") : "",
         tags: editingItem.tags ? editingItem.tags.join(", ") : "",
         requirement: editingItem.type === "trait" ? (traitItem.requirement || "") : "",
+        spell_level: editingItem.type === "spell" ? (editingItem as Spell).spell_level || "minor" : "minor",
         base_hp: editingItem.type === "ancestry" ? (ancestryItem.base_hp || 0) : 0,
         base_ac: editingItem.type === "ancestry" ? (ancestryItem.base_ac || 0) : 0,
         base_trait: editingItem.type === "ancestry" ? (ancestryItem.base_trait || "") : "",
@@ -112,6 +115,10 @@ function ContentForm({
         ...(formData.type === "trait" && {
           requirement: formData.requirement || null,
         }),
+        ...(formData.type === "spell" && {
+          spell_level: formData.spell_level || "minor",
+          rules: formData.rules || null,
+        }),
         ...(formData.type === "ancestry" && {
           base_hp: formData.base_hp || 0,
           base_ac: formData.base_ac || 0,
@@ -140,6 +147,7 @@ function ContentForm({
             rules: "",
             tags: "",
             requirement: "",
+            spell_level: "minor",
             base_hp: 0,
             base_ac: 3,
             base_trait: "",
@@ -251,6 +259,40 @@ function ContentForm({
 
           {/* Rules field - only for objects */}
           {formData.type === "object" && (
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                {t("content.form.rules")}
+              </label>
+              <textarea
+                value={formData.rules}
+                onChange={handleInputChange("rules")}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
+                placeholder={t("content.form.placeholders.enterRules")}
+                disabled={isSubmitting}
+              />
+            </div>
+          )}
+
+          {/* Spell Level field - only for spells */}
+          {formData.type === "spell" && (
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                {t("content.form.spellLevel")}
+              </label>
+              <select
+                value={formData.spell_level}
+                onChange={handleInputChange("spell_level")}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                disabled={isSubmitting}
+              >
+                <option value="minor">{t("content.form.minorSpell")}</option>
+                <option value="major">{t("content.form.majorSpell")}</option>
+              </select>
+            </div>
+          )}
+
+          {/* Rules field - only for spells */}
+          {formData.type === "spell" && (
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-700">
                 {t("content.form.rules")}

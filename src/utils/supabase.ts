@@ -1,12 +1,13 @@
 import { supabase } from "../lib/supabase";
 import {
-    Ancestry,
-    Class,
-    ContentType,
-    D6Content,
-    Object,
-    TagDefinition,
-    Trait
+  Ancestry,
+  Class,
+  ContentType,
+  D6Content,
+  Object,
+  Spell,
+  TagDefinition,
+  Trait
 } from "../types/content";
 
 // Generic function to get table name from content type
@@ -20,6 +21,8 @@ function getTableName(type: ContentType): string {
       return "classes";
     case "ancestry":
       return "ancestries";
+    case "spell":
+      return "spells";
     default:
       throw new Error(`Unknown content type: ${type}`);
   }
@@ -31,7 +34,7 @@ export async function fetchContent(): Promise<D6Content[]> {
     const allContent: D6Content[] = [];
 
     // Fetch from each table
-    const tables: ContentType[] = ["trait", "object", "class", "ancestry"];
+    const tables: ContentType[] = ["trait", "object", "class", "ancestry", "spell"];
 
     for (const type of tables) {
       const tableName = getTableName(type);
@@ -190,17 +193,41 @@ export async function fetchClasses(): Promise<Class[]> {
 }
 
 export async function fetchAncestries(): Promise<Ancestry[]> {
-  const { data, error } = await supabase
-    .from("ancestries")
-    .select("*")
-    .order("created_at", { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from("ancestries")
+      .select("*")
+      .order("name", { ascending: true });
 
-  if (error) {
+    if (error) {
+      console.error("Error fetching ancestries:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
     console.error("Error fetching ancestries:", error);
     return [];
   }
+}
 
-  return data?.map((item) => ({ ...item, type: "ancestry" as const })) || [];
+export async function fetchSpells(): Promise<Spell[]> {
+  try {
+    const { data, error } = await supabase
+      .from("spells")
+      .select("*")
+      .order("name", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching spells:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching spells:", error);
+    return [];
+  }
 }
 
 // Tag Definition Management Functions

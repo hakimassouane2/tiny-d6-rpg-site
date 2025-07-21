@@ -1,4 +1,4 @@
-export type ContentType = "trait" | "object" | "class" | "ancestry";
+export type ContentType = "trait" | "object" | "class" | "ancestry" | "spell";
 
 // Base interface for common fields
 export interface BaseContent {
@@ -32,6 +32,12 @@ export interface Ancestry extends BaseContent {
   base_trait: string;
 }
 
+export interface Spell extends BaseContent {
+  type: "spell";
+  spell_level: "minor" | "major";
+  rules: string | null;
+}
+
 // New tag definition interface for admin management
 export interface TagDefinition {
   id: string;
@@ -44,7 +50,7 @@ export interface TagDefinition {
 }
 
 // Union type for all content
-export type D6Content = Trait | Object | Class | Ancestry;
+export type D6Content = Trait | Object | Class | Ancestry | Spell;
 
 export interface ContentFormData {
   name: string;
@@ -53,6 +59,7 @@ export interface ContentFormData {
   tags: string;
   rules?: string;
   requirement?: string;
+  spell_level?: "minor" | "major";
   base_hp?: number;
   base_ac?: number;
   base_trait?: string;

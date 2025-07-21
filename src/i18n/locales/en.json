@@ -27,7 +27,8 @@
       "trait": "Trait",
       "object": "Object",
       "class": "Class",
-      "ancestry": "Ancestry"
+      "ancestry": "Ancestry",
+      "spell": "Spell"
     },
     "form": {
       "addNewContent": "Add New Content",
@@ -37,6 +38,7 @@
       "description": "Description",
       "rules": "Rules",
       "requirement": "Requirement",
+      "spellLevel": "Spell Level",
       "tags": "Tags",
       "baseHp": "Base HP",
       "baseAc": "Base AC",
@@ -59,6 +61,8 @@
         "addContent": "Add Content",
         "updateContent": "Update Content"
       },
+      "minorSpell": "Minor Spell",
+      "majorSpell": "Major Spell",
       "requirementHelp": "Prerequisite trait, class, or ancestry needed to take this trait"
     },
     "messages": {
