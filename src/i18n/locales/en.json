@@ -107,7 +107,8 @@
     "adminMode": "Admin Mode",
     "showHidden": "Show Hidden",
     "hideHidden": "Hide Hidden",
-    "exportMD": "Export MD"
+    "exportMD": "Export MD",
+    "settings": "Settings"
   },
   "stats": {
     "all": "All"

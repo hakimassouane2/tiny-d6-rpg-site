@@ -80,7 +80,7 @@ export default function Navbar({
                     title="Settings"
                   >
                     <Settings className="w-4 h-4" />
-                    <span className="hidden sm:inline">Settings</span>
+                    <span className="hidden sm:inline">{t("admin.settings")}</span>
                     <ChevronDown
                       className={`w-4 h-4 transition-transform ${
                         showSettingsDropdown ? "rotate-180" : ""
