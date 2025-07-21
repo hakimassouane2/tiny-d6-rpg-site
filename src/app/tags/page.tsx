@@ -184,29 +184,26 @@ export default function TagsPage() {
 
         {/* Admin Controls */}
         {isAdmin && (
-          <div className="mb-6 flex justify-between items-center">
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
+          <div className="mb-8 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder={t("tags.searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border bg-white text-gray-900 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                 />
               </div>
+              <button
+                onClick={handleAddClick}
+                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                {t("tags.addNewTag")}
+              </button>
             </div>
-            <button
-              onClick={handleAddClick}
-              className="ml-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              <Plus size={20} />
-              {t("tags.addNewTag")}
-            </button>
           </div>
         )}
 
