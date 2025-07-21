@@ -24,11 +24,17 @@ import {
   deleteContent,
   fetchContent,
   fetchTagDefinitions,
-  updateContent
+  updateContent,
 } from "../utils/supabase";
 import { getTagTranslationSync } from "../utils/tagTranslation";
 
-const CONTENT_TYPES: ContentType[] = ["trait", "object", "class", "ancestry", "spell"];
+const CONTENT_TYPES: ContentType[] = [
+  "trait",
+  "object",
+  "class",
+  "ancestry",
+  "spell",
+];
 
 // Get content types based on admin status
 const getContentTypesForUser = (isAdmin: boolean): ContentType[] => {
@@ -74,18 +80,25 @@ function ContentForm({
       const ancestryItem = editingItem as Ancestry;
       const objectItem = editingItem as ObjectType;
       const traitItem = editingItem as Trait;
-      
+
       setFormData({
         name: editingItem.name,
         type: editingItem.type,
         description: editingItem.description || "",
-        rules: editingItem.type === "object" ? (objectItem.rules || "") : "",
+        rules: editingItem.type === "object" ? objectItem.rules || "" : "",
         tags: editingItem.tags ? editingItem.tags.join(", ") : "",
-        requirement: editingItem.type === "trait" ? (traitItem.requirement || "") : "",
-        spell_level: editingItem.type === "spell" ? (editingItem as Spell).spell_level || "minor" : "minor",
-        base_hp: editingItem.type === "ancestry" ? (ancestryItem.base_hp || 0) : 0,
-        base_ac: editingItem.type === "ancestry" ? (ancestryItem.base_ac || 0) : 0,
-        base_trait: editingItem.type === "ancestry" ? (ancestryItem.base_trait || "") : "",
+        requirement:
+          editingItem.type === "trait" ? traitItem.requirement || "" : "",
+        spell_level:
+          editingItem.type === "spell"
+            ? (editingItem as Spell).spell_level || "minor"
+            : "minor",
+        base_hp:
+          editingItem.type === "ancestry" ? ancestryItem.base_hp || 0 : 0,
+        base_ac:
+          editingItem.type === "ancestry" ? ancestryItem.base_ac || 0 : 0,
+        base_trait:
+          editingItem.type === "ancestry" ? ancestryItem.base_trait || "" : "",
       });
     }
   }, [editingItem]);
@@ -461,7 +474,7 @@ export default function D6RPGSite() {
         fetchContent(),
         fetchTagDefinitions(),
       ]);
-      
+
       setContent(contentData);
       setTagDefinitions(tagData);
     } catch (error) {
@@ -486,7 +499,11 @@ export default function D6RPGSite() {
           item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.tags?.some((tag: string) => {
-            const translatedTag = getTagTranslationSync(tag, language, tagDefinitions);
+            const translatedTag = getTagTranslationSync(
+              tag,
+              language,
+              tagDefinitions
+            );
             return (
               tag.toLowerCase().includes(searchTerm.toLowerCase()) ||
               translatedTag.toLowerCase().includes(searchTerm.toLowerCase())
@@ -496,18 +513,12 @@ export default function D6RPGSite() {
     }
 
     setFilteredContent(filtered);
-    
+
     // Reset lazy loading when filters change
     setCurrentPage(1);
     setDisplayedContent(filtered.slice(0, ITEMS_PER_PAGE));
     setHasMore(filtered.length > ITEMS_PER_PAGE);
-  }, [
-    content,
-    selectedType,
-    searchTerm,
-    language,
-    tagDefinitions,
-  ]);
+  }, [content, selectedType, searchTerm, language, tagDefinitions]);
 
   const loadMoreContent = useCallback(() => {
     if (isLoadingMore || !hasMore) return;
@@ -518,10 +529,12 @@ export default function D6RPGSite() {
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const newItems = filteredContent.slice(startIndex, endIndex);
 
-    setDisplayedContent(prev => {
+    setDisplayedContent((prev) => {
       // Prevent duplicates by checking if items already exist
-      const existingIds = new Set(prev.map(item => item.id));
-      const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+      const existingIds = new Set(prev.map((item) => item.id));
+      const uniqueNewItems = newItems.filter(
+        (item) => !existingIds.has(item.id)
+      );
       return [...prev, ...uniqueNewItems];
     });
     setCurrentPage(nextPage);
@@ -540,7 +553,7 @@ export default function D6RPGSite() {
       { threshold: 0.1 }
     );
 
-    const sentinel = document.getElementById('scroll-sentinel');
+    const sentinel = document.getElementById("scroll-sentinel");
     if (sentinel) {
       observer.observe(sentinel);
     }
@@ -711,7 +724,7 @@ export default function D6RPGSite() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           {getContentTypesForUser(adminState.isLoggedIn).map(
             (type: ContentType) => (
               <div

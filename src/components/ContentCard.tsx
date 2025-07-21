@@ -1,7 +1,24 @@
-import { Copy, Edit, Gem, Star, Swords, Trash2, User, Wand2 } from "lucide-react";
+import {
+  Copy,
+  Edit,
+  Gem,
+  Star,
+  Swords,
+  Trash2,
+  User,
+  Wand2,
+} from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
-import { Ancestry, ContentType, D6Content, Object as ObjectType, Spell, TagDefinition, Trait } from "../types/content";
+import {
+  Ancestry,
+  ContentType,
+  D6Content,
+  Object as ObjectType,
+  Spell,
+  TagDefinition,
+  Trait,
+} from "../types/content";
 import { getTagTranslationSync } from "../utils/tagTranslation";
 import { getSpellLevelTranslation } from "../utils/translation";
 
@@ -36,15 +53,17 @@ export default function ContentCard({
   const getTypeIcon = (type: ContentType) => {
     switch (type) {
       case "trait":
-        return <Star className="w-5 h-5 text-blue-600" />;
+        return <Star className="w-5 h-5 text-blue-600" fill="currentColor" />;
       case "object":
-        return <Gem className="w-5 h-5 text-green-600" />;
+        return <Gem className="w-5 h-5 text-green-600" fill="currentColor" />;
       case "class":
-        return <Swords className="w-5 h-5 text-red-600" />;
+        return <Swords className="w-5 h-5 text-red-600" fill="currentColor" />;
       case "ancestry":
-        return <User className="w-5 h-5 text-orange-600" />;
+        return <User className="w-5 h-5 text-orange-600" fill="currentColor" />;
       case "spell":
-        return <Wand2 className="w-5 h-5 text-purple-600" />;
+        return (
+          <Wand2 className="w-5 h-5 text-purple-600" fill="currentColor" />
+        );
       default:
         return null;
     }
