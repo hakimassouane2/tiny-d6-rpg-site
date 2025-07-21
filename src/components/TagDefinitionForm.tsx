@@ -25,7 +25,6 @@ export default function TagDefinitionForm({
     name_en: "",
     name_fr: "",
     category: "",
-    is_hidden: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,7 +36,6 @@ export default function TagDefinitionForm({
         name_en: editingTag.name_en,
         name_fr: editingTag.name_fr,
         category: editingTag.category || "",
-        is_hidden: editingTag.is_hidden,
       });
     }
   }, [editingTag]);
@@ -96,7 +94,6 @@ export default function TagDefinitionForm({
             name_en: "",
             name_fr: "",
             category: "",
-            is_hidden: false,
           });
           onClose();
         } else {
@@ -198,24 +195,6 @@ export default function TagDefinitionForm({
             <p className="text-xs text-gray-500 mt-1">
               Optional category to group related tags
             </p>
-          </div>
-
-          {/* Hidden Checkbox */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="is_hidden"
-              checked={formData.is_hidden}
-              onChange={handleInputChange("is_hidden")}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              disabled={isSubmitting}
-            />
-            <label
-              htmlFor="is_hidden"
-              className="text-sm font-medium text-gray-700"
-            >
-              {t("tags.form.hidden")}
-            </label>
           </div>
 
           {/* Submit Buttons */}

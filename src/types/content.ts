@@ -5,9 +5,7 @@ export interface BaseContent {
   id: string;
   name: string;
   description: string | null;
-  rules: string | null;
   tags: string[] | null;
-  is_hidden: boolean | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -19,6 +17,7 @@ export interface Trait extends BaseContent {
 
 export interface Object extends BaseContent {
   type: "object";
+  rules: string | null;
 }
 
 export interface Class extends BaseContent {
@@ -39,7 +38,6 @@ export interface TagDefinition {
   name_en: string;
   name_fr: string;
   category: string | null;
-  is_hidden: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -51,9 +49,8 @@ export interface ContentFormData {
   name: string;
   type: ContentType;
   description: string;
-  rules: string;
   tags: string;
-  is_hidden: boolean;
+  rules?: string;
   base_hp?: number;
   base_ac?: number;
   base_trait?: string;
@@ -65,7 +62,6 @@ export interface TagDefinitionFormData {
   name_en: string;
   name_fr: string;
   category: string;
-  is_hidden: boolean;
 }
 
 export interface AdminState {

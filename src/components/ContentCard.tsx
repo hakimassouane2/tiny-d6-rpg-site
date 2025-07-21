@@ -1,7 +1,7 @@
-import { Edit, EyeOff, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/context";
-import { Ancestry, ContentType, D6Content, TagDefinition } from "../types/content";
+import { Ancestry, ContentType, D6Content, Object as ObjectType, TagDefinition } from "../types/content";
 import { getTagTranslationSync } from "../utils/tagTranslation";
 
 interface ContentCardProps {
@@ -53,15 +53,9 @@ export default function ContentCard({
       className={`border-2 rounded-lg p-4 ${
         typeColors[item.type]
       } transition-all hover:shadow-md hover:scale-105 relative ${
-        item.is_hidden ? "opacity-60" : ""
-      } ${item.type === "ancestry" ? "flex flex-col" : ""}`}
+        item.type === "ancestry" ? "flex flex-col" : ""
+      }`}
     >
-      {item.is_hidden && (
-        <div className="absolute top-2 left-2">
-          <EyeOff className="w-4 h-4 text-gray-500" />
-        </div>
-      )}
-
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-bold text-lg">{item.name}</h3>
         <div className="flex items-center gap-2">
@@ -103,13 +97,13 @@ export default function ContentCard({
 
       <p className="text-sm mb-3 opacity-80">{item.description}</p>
 
-      {item.rules && (
+      {item.type === "object" && (item as ObjectType).rules && (
         <div className="mb-3">
           <h4 className="font-semibold text-sm mb-1">
             {t("content.form.rules")}:
           </h4>
           <p className="text-sm bg-white bg-opacity-30 p-2 rounded">
-            {item.rules}
+            {(item as ObjectType).rules}
           </p>
         </div>
       )}

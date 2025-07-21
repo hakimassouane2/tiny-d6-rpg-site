@@ -6,8 +6,7 @@ import {
     D6Content,
     Object,
     TagDefinition,
-    TagDefinitionFormData,
-    Trait,
+    Trait
 } from "../types/content";
 
 // Generic function to get table name from content type
@@ -219,21 +218,14 @@ export async function fetchTagDefinitions(): Promise<TagDefinition[]> {
   return data || [];
 }
 
+// Add tag definition
 export async function addTagDefinition(
-  tagData: TagDefinitionFormData
+  tagData: Omit<TagDefinition, "id" | "created_at" | "updated_at">
 ): Promise<TagDefinition | null> {
   try {
     const { data, error } = await supabase
       .from("tag_definitions")
-      .insert([
-        {
-          code: tagData.code,
-          name_en: tagData.name_en,
-          name_fr: tagData.name_fr,
-          category: tagData.category || null,
-          is_hidden: tagData.is_hidden,
-        },
-      ])
+      .insert([tagData])
       .select()
       .single();
 
@@ -249,20 +241,15 @@ export async function addTagDefinition(
   }
 }
 
+// Update tag definition
 export async function updateTagDefinition(
   id: string,
-  tagData: TagDefinitionFormData
+  tagData: Partial<TagDefinition>
 ): Promise<TagDefinition | null> {
   try {
     const { data, error } = await supabase
       .from("tag_definitions")
-      .update({
-        code: tagData.code,
-        name_en: tagData.name_en,
-        name_fr: tagData.name_fr,
-        category: tagData.category || null,
-        is_hidden: tagData.is_hidden,
-      })
+      .update(tagData)
       .eq("id", id)
       .select()
       .single();

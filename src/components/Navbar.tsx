@@ -1,12 +1,10 @@
 import {
   ChevronDown,
   Download,
-  Eye,
-  EyeOff,
   Lock,
   LogOut,
   Settings,
-  User,
+  User
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -21,8 +19,6 @@ interface NavbarProps {
   onShowAdminLogin: () => void;
   showAdminLogin: boolean;
   onCloseAdminLogin: () => void;
-  showHiddenContent?: boolean;
-  onToggleHiddenContent?: () => void;
   onExportToMarkdown?: () => void;
 }
 
@@ -33,8 +29,6 @@ export default function Navbar({
   onShowAdminLogin,
   showAdminLogin,
   onCloseAdminLogin,
-  showHiddenContent,
-  onToggleHiddenContent,
   onExportToMarkdown,
 }: NavbarProps) {
   const { t } = useI18n();
@@ -120,27 +114,6 @@ export default function Navbar({
                           <Settings className="w-4 h-4 text-purple-600" />
                           <span>Tag Management</span>
                         </Link>
-
-                        {onToggleHiddenContent && (
-                          <button
-                            onClick={() => {
-                              onToggleHiddenContent();
-                              setShowSettingsDropdown(false);
-                            }}
-                            className="flex items-center gap-3 px-4 py-2 text-sm cursor-pointer text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
-                          >
-                            {showHiddenContent ? (
-                              <EyeOff className="w-4 h-4 text-blue-600" />
-                            ) : (
-                              <Eye className="w-4 h-4 text-blue-600" />
-                            )}
-                            <span>
-                              {showHiddenContent
-                                ? t("admin.hideHidden")
-                                : t("admin.showHidden")}
-                            </span>
-                          </button>
-                        )}
 
                         {onExportToMarkdown && (
                           <button

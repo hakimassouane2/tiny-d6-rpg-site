@@ -13,7 +13,8 @@ import {
   ContentFormData,
   ContentType,
   D6Content,
-  TagDefinition
+  Object as ObjectType,
+  TagDefinition,
 } from "../types/content";
 import { contentToMarkdown } from "../utils/markdown";
 import {
@@ -57,9 +58,8 @@ function ContentForm({
     description: "",
     rules: "",
     tags: "",
-    is_hidden: false,
     base_hp: 0,
-    base_ac: 0,
+    base_ac: 3,
     base_trait: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,16 +68,17 @@ function ContentForm({
   useEffect(() => {
     if (editingItem) {
       const ancestryItem = editingItem as Ancestry;
+      const objectItem = editingItem as ObjectType;
+      
       setFormData({
         name: editingItem.name,
         type: editingItem.type,
         description: editingItem.description || "",
-        rules: editingItem.rules || "",
+        rules: editingItem.type === "object" ? (objectItem.rules || "") : "",
         tags: editingItem.tags ? editingItem.tags.join(", ") : "",
-        is_hidden: editingItem.is_hidden || false,
-        base_hp: ancestryItem.base_hp || 0,
-        base_ac: ancestryItem.base_ac || 0,
-        base_trait: ancestryItem.base_trait || "",
+        base_hp: editingItem.type === "ancestry" ? (ancestryItem.base_hp || 0) : 0,
+        base_ac: editingItem.type === "ancestry" ? (ancestryItem.base_ac || 0) : 0,
+        base_trait: editingItem.type === "ancestry" ? (ancestryItem.base_trait || "") : "",
       });
     }
   }, [editingItem]);
@@ -102,7 +103,6 @@ function ContentForm({
         description: formData.description || null,
         rules: formData.rules || null,
         tags: tagsArray.length > 0 ? tagsArray : null,
-        is_hidden: formData.is_hidden,
         ...(formData.type === "ancestry" && {
           base_hp: formData.base_hp || 0,
           base_ac: formData.base_ac || 0,
@@ -130,7 +130,9 @@ function ContentForm({
             description: "",
             rules: "",
             tags: "",
-            is_hidden: false,
+            base_hp: 0,
+            base_ac: 3,
+            base_trait: "",
           });
           onClose();
         } else {
@@ -237,18 +239,21 @@ function ContentForm({
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
-              {t("content.form.rules")}
-            </label>
-            <textarea
-              value={formData.rules}
-              onChange={handleInputChange("rules")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
-              placeholder={t("content.form.placeholders.enterRules")}
-              disabled={isSubmitting}
-            />
-          </div>
+          {/* Rules field - only for objects */}
+          {formData.type === "object" && (
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                {t("content.form.rules")}
+              </label>
+              <textarea
+                value={formData.rules}
+                onChange={handleInputChange("rules")}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
+                placeholder={t("content.form.placeholders.enterRules")}
+                disabled={isSubmitting}
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-700">
@@ -309,25 +314,6 @@ function ContentForm({
             </>
           )}
 
-          {isAdmin && (
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="is_hidden"
-                checked={formData.is_hidden}
-                onChange={handleInputChange("is_hidden")}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                disabled={isSubmitting}
-              />
-              <label
-                htmlFor="is_hidden"
-                className="text-sm font-medium text-gray-700"
-              >
-                {t("content.form.labels.hideFromPlayers")}
-              </label>
-            </div>
-          )}
-
           <div className="flex gap-2 pt-4">
             <button
               onClick={handleSubmit}
@@ -371,7 +357,6 @@ export default function D6RPGSite() {
     password: "",
   });
   const [showAdminLogin, setShowAdminLogin] = useState<boolean>(false);
-  const [showHiddenContent, setShowHiddenContent] = useState<boolean>(false);
   const [editingItem, setEditingItem] = useState<D6Content | null>(null);
 
   // Simple admin password (you can change this)
@@ -414,12 +399,6 @@ export default function D6RPGSite() {
     let filtered = content;
 
     // Filter by visibility
-    if (!adminState.isLoggedIn) {
-      filtered = filtered.filter((item) => !item.is_hidden);
-    } else if (!showHiddenContent) {
-      filtered = filtered.filter((item) => !item.is_hidden);
-    }
-
     if (selectedType !== "all") {
       filtered = filtered.filter(
         (item: D6Content) => item.type === selectedType
@@ -446,8 +425,6 @@ export default function D6RPGSite() {
     content,
     selectedType,
     searchTerm,
-    adminState.isLoggedIn,
-    showHiddenContent,
     language,
     tagDefinitions,
   ]);
@@ -495,12 +472,10 @@ export default function D6RPGSite() {
   const handleAdminLogout = () => {
     setAdminState({ isLoggedIn: false, isAdmin: false, password: "" });
     localStorage.removeItem("admin_password");
-    setShowHiddenContent(false);
   };
 
   const exportToMarkdown = () => {
     const markdownContent = content
-      .filter((item) => !item.is_hidden || adminState.isLoggedIn)
       .map((item) => contentToMarkdown(item))
       .join("\n\n---\n\n");
 
@@ -539,8 +514,6 @@ export default function D6RPGSite() {
         onShowAdminLogin={() => setShowAdminLogin(true)}
         showAdminLogin={showAdminLogin}
         onCloseAdminLogin={() => setShowAdminLogin(false)}
-        showHiddenContent={showHiddenContent}
-        onToggleHiddenContent={() => setShowHiddenContent(!showHiddenContent)}
         onExportToMarkdown={exportToMarkdown}
       />
       <div className="container mx-auto px-4 py-8">
