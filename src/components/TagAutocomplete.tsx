@@ -4,6 +4,10 @@ import { ChevronDown, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useI18n } from "../i18n/context";
 import { TagDefinition } from "../types/content";
+import {
+  containsIgnoreDiacritics,
+  startsWithIgnoreDiacritics,
+} from "../utils/diacriticUtils";
 import { fetchTagDefinitions } from "../utils/supabase";
 
 interface TagAutocompleteProps {
@@ -61,8 +65,8 @@ export default function TagAutocomplete({
       // If it's a translation, find the code
       const tagDef = tagDefinitions.find(
         (td) =>
-          td.name_en.toLowerCase() === tag.toLowerCase() ||
-          td.name_fr.toLowerCase() === tag.toLowerCase()
+          containsIgnoreDiacritics(td.name_en, tag) ||
+          containsIgnoreDiacritics(td.name_fr, tag)
       );
       return tagDef ? tagDef.code : tag; // Fallback to original if not found
     });
@@ -76,8 +80,8 @@ export default function TagAutocomplete({
       const translation = language === "fr" ? tagDef.name_fr : tagDef.name_en;
       const isSelected = selectedTags.includes(tagDef.code);
       const matchesSearch =
-        translation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tagDef.code.toLowerCase().includes(searchTerm.toLowerCase());
+        containsIgnoreDiacritics(translation, searchTerm) ||
+        containsIgnoreDiacritics(tagDef.code, searchTerm);
       return !isSelected && matchesSearch;
     })
     .slice(0, 10);
@@ -163,7 +167,7 @@ export default function TagAutocomplete({
           const translation =
             language === "fr" ? tagDef.name_fr : tagDef.name_en;
           return (
-            translation.toLowerCase().startsWith(trimmedSearch.toLowerCase()) &&
+            startsWithIgnoreDiacritics(translation, trimmedSearch) &&
             translation.toLowerCase() !== trimmedSearch.toLowerCase()
           );
         });

@@ -9,6 +9,7 @@ import TagDefinitionCard from "../../components/TagDefinitionCard";
 import TagDefinitionForm from "../../components/TagDefinitionForm";
 import { useI18n } from "../../i18n/context";
 import { AdminState, TagDefinition } from "../../types/content";
+import { containsIgnoreDiacritics } from "../../utils/diacriticUtils";
 import { deleteTagDefinition, fetchTagDefinitions } from "../../utils/supabase";
 
 export default function TagsPage() {
@@ -53,21 +54,20 @@ export default function TagsPage() {
   // Filter tags based on search term
   useEffect(() => {
     let filtered = tagDefinitions;
-    
+
     if (searchTerm.trim()) {
       filtered = tagDefinitions.filter((tag) => {
-        const searchLower = searchTerm.toLowerCase();
         return (
-          tag.code.toLowerCase().includes(searchLower) ||
-          tag.name_en.toLowerCase().includes(searchLower) ||
-          tag.name_fr.toLowerCase().includes(searchLower) ||
-          (tag.category && tag.category.toLowerCase().includes(searchLower))
+          containsIgnoreDiacritics(tag.code, searchTerm) ||
+          containsIgnoreDiacritics(tag.name_en, searchTerm) ||
+          containsIgnoreDiacritics(tag.name_fr, searchTerm) ||
+          (tag.category && containsIgnoreDiacritics(tag.category, searchTerm))
         );
       });
     }
-    
+
     setFilteredTags(filtered);
-    
+
     // Reset lazy loading when search changes
     setCurrentPage(1);
     setDisplayedTags(filtered.slice(0, ITEMS_PER_PAGE));
@@ -84,10 +84,10 @@ export default function TagsPage() {
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const newItems = filteredTags.slice(startIndex, endIndex);
 
-    setDisplayedTags(prev => {
+    setDisplayedTags((prev) => {
       // Prevent duplicates by checking if items already exist
-      const existingIds = new Set(prev.map(tag => tag.id));
-      const uniqueNewItems = newItems.filter(tag => !existingIds.has(tag.id));
+      const existingIds = new Set(prev.map((tag) => tag.id));
+      const uniqueNewItems = newItems.filter((tag) => !existingIds.has(tag.id));
       return [...prev, ...uniqueNewItems];
     });
     setCurrentPage(nextPage);
@@ -106,7 +106,7 @@ export default function TagsPage() {
       { threshold: 0.1 }
     );
 
-    const sentinel = document.getElementById('tags-scroll-sentinel');
+    const sentinel = document.getElementById("tags-scroll-sentinel");
     if (sentinel) {
       observer.observe(sentinel);
     }

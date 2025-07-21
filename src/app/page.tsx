@@ -18,6 +18,7 @@ import {
   TagDefinition,
   Trait,
 } from "../types/content";
+import { containsIgnoreDiacritics } from "../utils/diacriticUtils";
 import { contentToMarkdown } from "../utils/markdown";
 import {
   addContent,
@@ -496,8 +497,9 @@ export default function D6RPGSite() {
     if (searchTerm) {
       filtered = filtered.filter(
         (item: D6Content) =>
-          item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          containsIgnoreDiacritics(item.name, searchTerm) ||
+          (item.description &&
+            containsIgnoreDiacritics(item.description, searchTerm)) ||
           item.tags?.some((tag: string) => {
             const translatedTag = getTagTranslationSync(
               tag,
@@ -505,8 +507,8 @@ export default function D6RPGSite() {
               tagDefinitions
             );
             return (
-              tag.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              translatedTag.toLowerCase().includes(searchTerm.toLowerCase())
+              containsIgnoreDiacritics(tag, searchTerm) ||
+              containsIgnoreDiacritics(translatedTag, searchTerm)
             );
           })
       );
