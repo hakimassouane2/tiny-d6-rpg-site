@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Search, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AdminLogin from "../components/AdminLogin";
 import ContentCard from "../components/ContentCard";
 import Navbar from "../components/Navbar";
@@ -23,7 +23,7 @@ import {
   deleteContent,
   fetchContent,
   fetchTagDefinitions,
-  updateContent,
+  updateContent
 } from "../utils/supabase";
 import { getTagTranslationSync } from "../utils/tagTranslation";
 
@@ -420,10 +420,7 @@ export default function D6RPGSite() {
         fetchTagDefinitions(),
       ]);
       
-      if (contentData.length > 0) {
-        setContent(contentData);
-      }
-      
+      setContent(contentData);
       setTagDefinitions(tagData);
     } catch (error) {
       console.error("Error loading content:", error);
@@ -470,8 +467,7 @@ export default function D6RPGSite() {
     tagDefinitions,
   ]);
 
-  // Load more content
-  const loadMoreContent = () => {
+  const loadMoreContent = useCallback(() => {
     if (isLoadingMore || !hasMore) return;
 
     setIsLoadingMore(true);
@@ -489,7 +485,7 @@ export default function D6RPGSite() {
     setCurrentPage(nextPage);
     setHasMore(endIndex < filteredContent.length);
     setIsLoadingMore(false);
-  };
+  }, [currentPage, filteredContent, hasMore, isLoadingMore, ITEMS_PER_PAGE]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -512,7 +508,7 @@ export default function D6RPGSite() {
         observer.unobserve(sentinel);
       }
     };
-  }, [hasMore, isLoadingMore, filteredContent]);
+  }, [hasMore, isLoadingMore, loadMoreContent]);
 
   const handleAddContent = (newContent: D6Content): void => {
     setContent([newContent, ...content]);
@@ -710,11 +706,6 @@ export default function D6RPGSite() {
               <p className="text-gray-600 mt-2">{t("common.loadingMore")}</p>
             </div>
           )}
-          {!hasMore && displayedContent.length > 0 && (
-            <div className="col-span-full text-center py-8">
-              <p className="text-gray-500 text-lg">{t("content.messages.noMoreContent")}</p>
-            </div>
-          )}
         </div>
 
         {filteredContent.length === 0 && (
@@ -747,7 +738,7 @@ export default function D6RPGSite() {
           />
         )}
       </div>
-      <div id="scroll-sentinel" className="h-1"></div>
+      <div id="scroll-sentinel" className="h-4 bg-transparent"></div>
     </div>
   );
 }
