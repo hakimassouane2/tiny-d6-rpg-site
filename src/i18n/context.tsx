@@ -1,17 +1,17 @@
 "use client";
 
 import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
+    ReactNode,
+    createContext,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { Language, defaultLanguage } from "./config";
 import {
-  getLanguageFromStorage,
-  getTranslation,
-  setLanguageToStorage,
+    getLanguageFromStorage,
+    getTranslation,
+    setLanguageToStorage,
 } from "./index";
 
 interface I18nContextType {
@@ -29,10 +29,17 @@ interface I18nProviderProps {
 export function I18nProvider({ children }: I18nProviderProps) {
   const [language, setLanguageState] = useState<Language>(defaultLanguage);
 
+  // Set initial language on HTML element to prevent hydration mismatch
+  useEffect(() => {
+    document.documentElement.lang = defaultLanguage;
+  }, []);
+
   // Load language preference from localStorage on mount
   useEffect(() => {
     const savedLanguage = getLanguageFromStorage();
     setLanguageState(savedLanguage);
+    // Update document lang attribute with the loaded language
+    document.documentElement.lang = savedLanguage;
   }, []);
 
   const setLanguage = (lang: Language) => {
