@@ -19,6 +19,7 @@ import {
   TagDefinition,
   Trait,
 } from "../types/content";
+import { parseMarkdown } from "../utils/markdown";
 import { getTagTranslationSync } from "../utils/tagTranslation";
 import { getSpellLevelTranslation } from "../utils/translation";
 
@@ -153,7 +154,12 @@ export default function ContentCard({
         </div>
       </div>
 
-      <p className="text-sm mb-3 opacity-80">{item.description}</p>
+      <div
+        className="text-sm mb-3 opacity-80"
+        dangerouslySetInnerHTML={{
+          __html: parseMarkdown(item.description || ""),
+        }}
+      />
 
       {/* Requirement field - only for traits */}
       {item.type === "trait" && (item as Trait).requirement && (
@@ -172,9 +178,12 @@ export default function ContentCard({
           <h4 className="font-semibold text-sm mb-1">
             {t("content.form.rules")}:
           </h4>
-          <p className="text-sm bg-white bg-opacity-30 p-2 rounded">
-            {(item as ObjectType).rules}
-          </p>
+          <div
+            className="text-sm bg-white bg-opacity-30 p-2 rounded"
+            dangerouslySetInnerHTML={{
+              __html: parseMarkdown((item as ObjectType).rules || ""),
+            }}
+          />
         </div>
       )}
 
@@ -186,9 +195,12 @@ export default function ContentCard({
               <h4 className="font-semibold text-sm mb-1">
                 {t("content.form.rules")}:
               </h4>
-              <p className="text-sm bg-white bg-opacity-30 p-2 rounded">
-                {(item as Spell).rules}
-              </p>
+              <div
+                className="text-sm bg-white bg-opacity-30 p-2 rounded"
+                dangerouslySetInnerHTML={{
+                  __html: parseMarkdown((item as Spell).rules || ""),
+                }}
+              />
             </div>
           )}
           <div className="mb-3">

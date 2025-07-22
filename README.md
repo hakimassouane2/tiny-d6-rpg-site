@@ -117,14 +117,36 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ### Markdown Support
 
-The app supports basic markdown formatting:
+The app supports rich markdown formatting in description and rules fields:
 
 - **Headers**: `# H1`, `## H2`, `### H3`
 - **Bold**: `**text**`
 - **Italic**: `*text*`
-- **Lists**: `* item`
-- **Code**: `` `code` `` or ` `code block` `
-- **Line breaks**: Automatic
+- **Unordered Lists**: `* item` or `- item`
+- **Ordered Lists**: `1. item`, `2. item`, etc.
+- **Inline Code**: `` `code` ``
+- **Code Blocks**: ` ```code block``` `
+- **Line Breaks**: Automatic
+
+**Example:**
+
+```markdown
+# Powerful Sword
+
+This is a **magical** sword with _enchanted_ properties.
+
+## Effects
+
+- +2 to attack rolls
+- Deals fire damage
+- Glows in darkness
+
+## Usage
+
+1. Draw the sword
+2. Speak the command word
+3. Make your attack roll
+```
 
 ### Searching and Filtering
 

@@ -47,8 +47,8 @@
       "hidden": "Masqué",
       "placeholders": {
         "enterContentName": "Entrez le nom du contenu",
-        "enterDescription": "Entrez la description",
-        "enterRules": "Entrez les règles",
+        "enterDescription": "Entrez la description (supporte markdown)",
+        "enterRules": "Entrez les règles (supporte markdown)",
         "enterRequirement": "Entrez le prérequis (ex: 'trait Alchimiste')",
         "enterTags": "Entrez les tags (séparés par des virgules)",
         "enterBaseTrait": "Entrez le trait de base",
