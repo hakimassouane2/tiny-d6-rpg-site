@@ -210,7 +210,7 @@ function ContentForm({
       className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
+      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900">
             {isEditing
@@ -265,7 +265,7 @@ function ContentForm({
             <textarea
               value={formData.description}
               onChange={handleInputChange("description")}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 h-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
               placeholder={t("content.form.placeholders.enterDescription")}
               disabled={isSubmitting}
             />
@@ -280,7 +280,7 @@ function ContentForm({
               <textarea
                 value={formData.rules}
                 onChange={handleInputChange("rules")}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 h-16 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 h-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 resize-y"
                 placeholder={t("content.form.placeholders.enterRules")}
                 disabled={isSubmitting}
               />
